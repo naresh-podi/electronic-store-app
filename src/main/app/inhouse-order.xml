@@ -37,14 +37,8 @@ http://www.mulesoft.org/schema/mule/ee/tracking http://www.mulesoft.org/schema/m
 			doc:name="save-order-item" transactionalAction="ALWAYS_JOIN">
             <db:parameterized-query><![CDATA[insert into orders (product_id, name, manufacturer, quantity, price) values (#[payload.productId], #[payload.name], #[payload.manufacturer], #[payload.quantity], #[price])]]></db:parameterized-query>
 		</db:insert>
-		<scripting:transformer doc:name="prepare-receipt">
-			<scripting:script engine="Groovy">
-                <scripting:text><![CDATA[receipt = new com.mulesoft.estore.orders.PurchaseReceipt(); 
-receipt.setStatus(com.mulesoft.estore.orders.Status.ACCEPTED); 
-receipt.setTotalPrice(Float.valueOf(message.getInvocationProperty('totalPrice'))); 
-return receipt;]]></scripting:text>
-			</scripting:script>
-		</scripting:transformer>
+        <component class="com.mulesoft.estore.orders.MakePurchaseReceipt" doc:name="prepare-receipt"/>
+
 		<rollback-exception-strategy doc:name="rollback-exception-strategy"
 			maxRedeliveryAttempts="3">
 			<logger doc:name="logs- payload" level="INFO" message="#[payload]" />
