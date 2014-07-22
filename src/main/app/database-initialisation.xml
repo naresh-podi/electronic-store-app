@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<mule xmlns:http="http://www.mulesoft.org/schema/mule/http"
+<mule xmlns:quartz="http://www.mulesoft.org/schema/mule/quartz" xmlns:tracking="http://www.mulesoft.org/schema/mule/ee/tracking" xmlns:http="http://www.mulesoft.org/schema/mule/http"
 	xmlns:db="http://www.mulesoft.org/schema/mule/db" xmlns="http://www.mulesoft.org/schema/mule/core"
 	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
 	xmlns:spring="http://www.springframework.org/schema/beans" version="EE-3.5.0"
@@ -8,11 +8,18 @@
 	xsi:schemaLocation="http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
 http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/current/mule-db.xsd
 http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-current.xsd
-http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd">
-	<flow doc:name="database-initialisation" name="database-initialisation">
-		<http:inbound-endpoint connector-ref="HttpConnector"
+http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/ee/tracking http://www.mulesoft.org/schema/mule/ee/tracking/current/mule-tracking-ee.xsd
+http://www.mulesoft.org/schema/mule/quartz http://www.mulesoft.org/schema/mule/quartz/current/mule-quartz.xsd">
+	<flow doc:name="database-initialisation" name="database-initialisation" initialState="started">
+        <quartz:inbound-endpoint name="runOnce" repeatCount="0" repeatInterval="5001" jobName="trigger-db" doc:name="Quartz" responseTimeout="10000">
+        <quartz:event-generator-job>
+            <quartz:payload>db-initialised</quartz:payload>
+        </quartz:event-generator-job>
+    </quartz:inbound-endpoint>
+		<!-- <http:inbound-endpoint connector-ref="HttpConnector"
 			doc:name="http-db-populate" exchange-pattern="request-response" host="${http.host}"
-			path="${http.path.db.populate}" port="${http.port}" />
+			path="${http.path.db.populate}" port="${http.port}" /> -->
         <db:execute-ddl config-ref="Generic_Database_Configuration" doc:name="create-products-table">
             <db:dynamic-query><![CDATA[CREATE TABLE PRODUCTS
 (PRODUCT_ID INTEGER NOT NULL GENERATED ALWAYS AS IDENTITY,
@@ -35,6 +42,7 @@ STATUS VARCHAR(255) DEFAULT 'ACCEPT',
 PRIMARY KEY (ORDER_ID),
 FOREIGN KEY (PRODUCT_ID) REFERENCES PRODUCTS(PRODUCT_ID))]]></db:dynamic-query>
 
+
 		</db:execute-ddl>
 
 		<db:execute-ddl config-ref="Generic_Database_Configuration"
@@ -52,6 +60,7 @@ FOREIGN KEY (ORDER_ID) REFERENCES ORDERS(ORDER_ID))]]></db:dynamic-query>
 	(MANUFACTURER, PRODUCT_NAME, PRICE)
 VALUES 
 	('Samsung', 'S-1',12345 ),('Samsung', 'S-2',2100 ), ('Samsung', 'S-3',2200 ), ('Samsung', 'S-4',4500), ('Samsung', 'S-5',40987 ), ('Philips', 'P-1',12345 ), ('Bajaj', 'B1',9870), ('Bajaj', 'B-2',12345 ), ('Apple', 'A-1',12345 ), ('Apple', 'A-2',12345 )]]></db:parameterized-query>
+
         </db:insert>
 
 		<set-payload doc:name="set-payload-db-populated" value="db populated" />
