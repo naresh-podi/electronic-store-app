@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<con:soapui-project activeEnvironment="Default" name="orders?wsdl" resourceRoot="" soapui-version="4.6.4" abortOnError="false" runType="SEQUENTIAL" xmlns:con="http://eviware.com/soapui/config"><con:settings/><con:interface xsi:type="con:WsdlInterface" wsaVersion="NONE" name="IProcessOrderServiceSoapBinding" type="wsdl" bindingName="{http://orders.estore.mulesoft.com/}IProcessOrderServiceSoapBinding" soapVersion="1_1" anonymous="optional" definition="http://localhost:1080/orders?wsdl" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:settings/><con:definitionCache type="TEXT" rootPart="http://localhost:1080/orders?wsdl"><con:part><con:url>http://localhost:1080/orders?wsdl</con:url><con:content><![CDATA[<wsdl:definitions name="IProcessOrderService" targetNamespace="http://orders.estore.mulesoft.com/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:tns="http://orders.estore.mulesoft.com/" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:ns1="http://schemas.xmlsoap.org/soap/http">
+  <wsdl:types>
+    <xs:schema elementFormDefault="unqualified" targetNamespace="http://orders.estore.mulesoft.com/" version="1.0" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+      <xs:element name="item" type="tns:orderItem"/>
+      <xs:element name="order" type="tns:order"/>
+      <xs:element name="processOrder" type="tns:processOrder"/>
+      <xs:element name="processOrderResponse" type="tns:processOrderResponse"/>
+      <xs:element name="purchaseReceipt" type="tns:purchaseReceipt"/>
+      <xs:complexType name="processOrder">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="order" type="tns:order"/>
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="order">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="orderId" type="xs:string"/>
+          <xs:element minOccurs="0" name="customer" type="tns:orderPerson"/>
+          <xs:element minOccurs="0" name="orderItems">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element maxOccurs="unbounded" minOccurs="0" name="item" type="tns:orderItem"/>
+              </xs:sequence>
+            </xs:complexType>
+          </xs:element>
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="orderPerson">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="address" type="xs:string"/>
+          <xs:element minOccurs="0" name="firstName" type="xs:string"/>
+          <xs:element minOccurs="0" name="lastName" type="xs:string"/>
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="orderItem">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="manufacturer" type="xs:string"/>
+          <xs:element minOccurs="0" name="name" type="xs:string"/>
+          <xs:element minOccurs="0" name="productId" type="xs:string"/>
+          <xs:element minOccurs="0" name="purchaseReceipt" type="tns:purchaseReceipt"/>
+          <xs:element name="quantity" type="xs:int"/>
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="purchaseReceipt">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="id" type="xs:string"/>
+          <xs:element minOccurs="0" name="status" type="tns:status"/>
+          <xs:element name="totalPrice" type="xs:float"/>
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="processOrderResponse">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="summary" type="tns:order"/>
+        </xs:sequence>
+      </xs:complexType>
+      <xs:simpleType name="status">
+        <xs:restriction base="xs:string">
+          <xs:enumeration value="ACCEPTED"/>
+          <xs:enumeration value="REJECTED"/>
+        </xs:restriction>
+      </xs:simpleType>
+    </xs:schema>
+  </wsdl:types>
+  <wsdl:message name="processOrderResponse">
+    <wsdl:part element="tns:processOrderResponse" name="parameters"></wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="processOrder">
+    <wsdl:part element="tns:processOrder" name="parameters"></wsdl:part>
+  </wsdl:message>
+  <wsdl:portType name="IProcessOrder">
+    <wsdl:operation name="processOrder">
+      <wsdl:input message="tns:processOrder" name="processOrder"></wsdl:input>
+      <wsdl:output message="tns:processOrderResponse" name="processOrderResponse"></wsdl:output>
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:binding name="IProcessOrderServiceSoapBinding" type="tns:IProcessOrder">
+    <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+    <wsdl:operation name="processOrder">
+      <soap:operation soapAction="" style="document"/>
+      <wsdl:input name="processOrder">
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="processOrderResponse">
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:service name="IProcessOrderService">
+    <wsdl:port binding="tns:IProcessOrderServiceSoapBinding" name="IProcessOrderPort">
+      <soap:address location="http://localhost:1080/orders"/>
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>]]></con:content><con:type>http://schemas.xmlsoap.org/wsdl/</con:type></con:part></con:definitionCache><con:endpoints><con:endpoint>http://localhost:1080/orders</con:endpoint></con:endpoints><con:operation isOneWay="false" action="" name="processOrder" bindingOperationName="processOrder" type="Request-Response" outputName="processOrderResponse" inputName="processOrder" receivesAttachments="false" sendsAttachments="false" anonymous="optional"><con:settings/><con:call name="Request 1"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:encoding>UTF-8</con:encoding><con:endpoint>http://54.90.77.19:8081/processOrder</con:endpoint><con:request><![CDATA[<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:ord="http://orders.estore.mulesoft.com/">
+   <soapenv:Header/>
+   <soapenv:Body>
+      <ord:processOrder>
+         <order>
+            <orderId>1</orderId>
+            <customer>
+               <address>Hyd</address>
+               <firstName>Naresh</firstName>
+               <lastName>Podi</lastName>
+            </customer>
+            <orderItems>
+               <item>
+                  <manufacturer>Sony</manufacturer>
+                  <name>Sony 3</name>
+                  <productId>21234</productId>
+                  <quantity>2</quantity>
+               </item>
+               <item>
+                  <manufacturer>Sony</manufacturer>
+                  <name>Sony</name>
+                  <productId>Ng234</productId>
+                  <quantity>2</quantity>
+               </item>
+               <item>
+                  <manufacturer>Samsung</manufacturer>
+                  <name>Note 3</name>
+                  <productId>N1234</productId>
+                  <quantity>2</quantity>
+               </item>
+            </orderItems>
+         </order>
+      </ord:processOrder>
+   </soapenv:Body>
+</soapenv:Envelope>]]></con:request><con:credentials><con:authType>NTLM</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:wsaConfig mustUnderstand="NONE" version="200508" action="http://orders.estore.mulesoft.com/IProcessOrder/processOrder"/><con:wsrmConfig version="1.2"/></con:call></con:operation></con:interface><con:properties/><con:wssContainer/><con:oAuth2ProfileContainer/></con:soapui-project>

@@ -1,0 +1,28 @@
+<order>
+	<orderId>1</orderId>
+	<customer>
+		<address>Hyderabad</address>
+		<firstName>Naresh</firstName>
+		<lastName>Podi</lastName>
+	</customer>
+	<orderItems>
+		<item>
+			<manufacturer>Sony</manufacturer>
+			<name>Sony 3</name>
+			<productId>21234</productId>
+			<quantity>2</quantity>
+		</item>
+		<item>
+			<manufacturer>Sony</manufacturer>
+			<name>Sony</name>
+			<productId>Ng234</productId>
+			<quantity>2</quantity>
+		</item>
+		<item>
+			<manufacturer>Samsung</manufacturer>
+			<name>Note 3</name>
+			<productId>N1234</productId>
+			<quantity>2</quantity>
+		</item>
+	</orderItems>
+</order>

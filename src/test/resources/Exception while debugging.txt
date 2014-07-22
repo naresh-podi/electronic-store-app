@@ -1,0 +1,113 @@
+[07-21 14:44:18] INFO  DefaultTransportServiceDescriptor [[electronics-store-app].HttpConnector.receiver.02]: Loading default outbound transformer: org.mule.transport.jms.transformers.ObjectToJMSMessage
+[07-21 14:44:18] INFO  DefaultTransportServiceDescriptor [[electronics-store-app].HttpConnector.receiver.02]: Loading default response transformer: org.mule.transport.jms.transformers.ObjectToJMSMessage
+[07-21 14:44:18] WARN  EeJmsMessageDispatcher [[electronics-store-app].HttpConnector.receiver.02]: Starting patched JmsMessageReceiver
+[07-21 14:44:18] INFO  AbstractLifecycleManager [[electronics-store-app].HttpConnector.receiver.02]: Initialising: 'Active_MQ.dispatcher.1728683889'. Object is: EeJmsMessageDispatcher
+[07-21 14:44:18] INFO  AbstractLifecycleManager [[electronics-store-app].HttpConnector.receiver.02]: Starting: 'Active_MQ.dispatcher.1728683889'. Object is: EeJmsMessageDispatcher
+[07-21 14:44:18] INFO  DefaultTransportServiceDescriptor [[electronics-store-app].Active_MQ.receiver.01]: Loading default outbound transformer: org.mule.transport.http.transformers.ObjectToHttpClientMethodRequest
+[07-21 14:44:18] INFO  DefaultTransportServiceDescriptor [[electronics-store-app].Active_MQ.receiver.01]: Loading default response transformer: org.mule.transport.http.transformers.MuleMessageToHttpResponse
+[07-21 14:44:18] INFO  DefaultTransportServiceDescriptor [[electronics-store-app].Active_MQ.receiver.01]: Loading default outbound transformer: org.mule.transport.http.transformers.ObjectToHttpClientMethodRequest
+[07-21 14:44:18] INFO  AbstractLifecycleManager [[electronics-store-app].Active_MQ.receiver.01]: Initialising: 'HttpConnector.dispatcher.534021315'. Object is: HttpClientMessageDispatcher
+[07-21 14:44:18] INFO  AbstractLifecycleManager [[electronics-store-app].Active_MQ.receiver.01]: Starting: 'HttpConnector.dispatcher.534021315'. Object is: HttpClientMessageDispatcher
+[07-21 14:44:20] INFO  DefaultTransportServiceDescriptor [[electronics-store-app].Active_MQ.receiver.01]: Loading default outbound transformer: org.mule.transport.jms.transformers.ObjectToJMSMessage
+[07-21 14:44:20] INFO  JmsReplyToHandler [[electronics-store-app].Active_MQ.receiver.01]: Reply Message sent to: temp-queue://ID:rafiqoffice-pc-62297-1405933999366-2:1:1 with correlationID:64eef900-10b7-11e4-be37-e4d53df12e4b
+[07-21 14:45:20] INFO  DefaultTransportServiceDescriptor [[electronics-store-app].Active_MQ.receiver.01]: Loading default outbound transformer: org.mule.transport.http.transformers.ObjectToHttpClientMethodRequest
+[07-21 14:45:20] INFO  DefaultTransportServiceDescriptor [[electronics-store-app].Active_MQ.receiver.01]: Loading default response transformer: org.mule.transport.http.transformers.MuleMessageToHttpResponse
+[07-21 14:45:20] INFO  DefaultTransportServiceDescriptor [[electronics-store-app].Active_MQ.receiver.01]: Loading default outbound transformer: org.mule.transport.http.transformers.ObjectToHttpClientMethodRequest
+[07-21 14:45:20] INFO  AbstractLifecycleManager [[electronics-store-app].Active_MQ.receiver.01]: Initialising: 'HttpConnector.dispatcher.1481531569'. Object is: HttpClientMessageDispatcher
+[07-21 14:45:20] INFO  AbstractLifecycleManager [[electronics-store-app].Active_MQ.receiver.01]: Starting: 'HttpConnector.dispatcher.1481531569'. Object is: HttpClientMessageDispatcher
+[07-21 14:45:20] INFO  DefaultTransportServiceDescriptor [[electronics-store-app].Active_MQ.receiver.01]: Loading default outbound transformer: org.mule.transport.jms.transformers.ObjectToJMSMessage
+[07-21 14:45:20] INFO  JmsReplyToHandler [[electronics-store-app].Active_MQ.receiver.01]: Reply Message sent to: temp-queue://ID:rafiqoffice-pc-62297-1405933999366-2:1:2 with correlationID:64eef900-10b7-11e4-be37-e4d53df12e4b
+[07-21 14:45:24] INFO  AbstractLifecycleManager [[electronics-store-app].HttpConnector.receiver.02]: Initialising: 'connector.VM.mule.default.dispatcher.1913699388'. Object is: VMMessageDispatcher
+[07-21 14:45:24] INFO  AbstractLifecycleManager [[electronics-store-app].HttpConnector.receiver.02]: Starting: 'connector.VM.mule.default.dispatcher.1913699388'. Object is: VMMessageDispatcher
+[07-21 14:45:25] INFO  DefaultTransportServiceDescriptor [[electronics-store-app].HttpConnector.receiver.02]: Loading default outbound transformer: org.mule.transport.http.transformers.ObjectToHttpClientMethodRequest
+[07-21 14:45:25] INFO  DefaultTransportServiceDescriptor [[electronics-store-app].HttpConnector.receiver.02]: Loading default response transformer: org.mule.transport.http.transformers.MuleMessageToHttpResponse
+[07-21 14:45:25] INFO  DefaultTransportServiceDescriptor [[electronics-store-app].HttpConnector.receiver.02]: Loading default outbound transformer: org.mule.transport.http.transformers.ObjectToHttpClientMethodRequest
+[07-21 14:45:25] INFO  AbstractLifecycleManager [[electronics-store-app].HttpConnector.receiver.02]: Initialising: 'HttpConnector.dispatcher.1390763517'. Object is: HttpClientMessageDispatcher
+[07-21 14:45:25] INFO  AbstractLifecycleManager [[electronics-store-app].HttpConnector.receiver.02]: Starting: 'HttpConnector.dispatcher.1390763517'. Object is: HttpClientMessageDispatcher
+[07-21 14:45:37] INFO  AbstractLifecycleManager [[electronics-store-app].HttpConnector.receiver.02]: Initialising: 'connector.VM.mule.default.dispatcher.1982684116'. Object is: VMMessageDispatcher
+[07-21 14:45:37] INFO  AbstractLifecycleManager [[electronics-store-app].HttpConnector.receiver.02]: Starting: 'connector.VM.mule.default.dispatcher.1982684116'. Object is: VMMessageDispatcher
+[07-21 14:45:37] WARN  PhaseInterceptorChain [[electronics-store-app].HttpConnector.receiver.02]: Interceptor for {http://orders.estore.mulesoft.com/}IProcessOrderService#{http://orders.estore.mulesoft.com/}processOrder has thrown exception, unwinding now
+org.apache.cxf.interceptor.Fault: Could not send Message.
+	at org.apache.cxf.interceptor.MessageSenderInterceptor$MessageSenderEndingInterceptor.handleMessage(MessageSenderInterceptor.java:64)
+	at org.apache.cxf.phase.PhaseInterceptorChain.doIntercept(PhaseInterceptorChain.java:263)
+	at org.apache.cxf.phase.PhaseInterceptorChain.resume(PhaseInterceptorChain.java:232)
+	at org.mule.module.cxf.CxfInboundMessageProcessor$1.write(CxfInboundMessageProcessor.java:426)
+	at org.mule.transport.http.HttpServerConnection.writeResponse(HttpServerConnection.java:353)
+	at org.mule.transport.http.HttpMessageProcessTemplate.sendResponseToClient(HttpMessageProcessTemplate.java:137)
+	at org.mule.execution.FlowProcessingPhase.sendResponseIfNeccessary(FlowProcessingPhase.java:153)
+	at org.mule.execution.FlowProcessingPhase.access$000(FlowProcessingPhase.java:29)
+	at org.mule.execution.FlowProcessingPhase$1$1.process(FlowProcessingPhase.java:78)
+	at org.mule.execution.FlowProcessingPhase$1$1.process(FlowProcessingPhase.java:63)
+	at org.mule.execution.ExecuteCallbackInterceptor.execute(ExecuteCallbackInterceptor.java:16)
+	at org.mule.execution.HandleExceptionInterceptor.execute(HandleExceptionInterceptor.java:30)
+	at org.mule.execution.HandleExceptionInterceptor.execute(HandleExceptionInterceptor.java:14)
+	at org.mule.execution.BeginAndResolveTransactionInterceptor.execute(BeginAndResolveTransactionInterceptor.java:54)
+	at org.mule.execution.ResolvePreviousTransactionInterceptor.execute(ResolvePreviousTransactionInterceptor.java:44)
+	at org.mule.execution.SuspendXaTransactionInterceptor.execute(SuspendXaTransactionInterceptor.java:50)
+	at org.mule.execution.ValidateTransactionalStateInterceptor.execute(ValidateTransactionalStateInterceptor.java:40)
+	at org.mule.execution.IsolateCurrentTransactionInterceptor.execute(IsolateCurrentTransactionInterceptor.java:41)
+	at org.mule.execution.ExternalTransactionInterceptor.execute(ExternalTransactionInterceptor.java:48)
+	at org.mule.execution.RethrowExceptionInterceptor.execute(RethrowExceptionInterceptor.java:28)
+	at org.mule.execution.RethrowExceptionInterceptor.execute(RethrowExceptionInterceptor.java:13)
+	at org.mule.execution.TransactionalErrorHandlingExecutionTemplate.execute(TransactionalErrorHandlingExecutionTemplate.java:109)
+	at org.mule.execution.FlowProcessingPhase$1.run(FlowProcessingPhase.java:62)
+	at org.mule.transport.TrackingWorkManager$TrackeableWork.run(TrackingWorkManager.java:267)
+	at org.mule.work.WorkerContext.run(WorkerContext.java:286)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.runTask(ThreadPoolExecutor.java:895)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:918)
+	at java.lang.Thread.run(Thread.java:662)
+Caused by: java.net.SocketException: Software caused connection abort: socket write error
+	at java.net.SocketOutputStream.socketWrite0(Native Method)
+	at java.net.SocketOutputStream.socketWrite(SocketOutputStream.java:92)
+	at java.net.SocketOutputStream.write(SocketOutputStream.java:136)
+	at java.io.DataOutputStream.write(DataOutputStream.java:90)
+	at org.apache.commons.httpclient.ChunkedOutputStream.flushCache(ChunkedOutputStream.java:99)
+	at org.apache.commons.httpclient.ChunkedOutputStream.finish(ChunkedOutputStream.java:143)
+	at org.apache.commons.httpclient.ChunkedOutputStream.close(ChunkedOutputStream.java:199)
+	at org.mule.module.cxf.support.DelegatingOutputStream.close(DelegatingOutputStream.java:35)
+	at org.mule.module.cxf.transport.MuleUniversalDestination$ResponseConduit.close(MuleUniversalDestination.java:77)
+	at org.apache.cxf.interceptor.MessageSenderInterceptor$MessageSenderEndingInterceptor.handleMessage(MessageSenderInterceptor.java:62)
+	... 27 more
+[07-21 14:45:37] ERROR CatchMessagingExceptionStrategy [[electronics-store-app].HttpConnector.receiver.02]: 
+********************************************************************************
+Message               : Software caused connection abort: socket write error (java.net.SocketException). Message payload is of type: HttpResponse
+Code                  : MULE_ERROR--2
+--------------------------------------------------------------------------------
+Exception stack is:
+1. Software caused connection abort: socket write error (java.net.SocketException)
+  java.net.SocketOutputStream:-2 (null)
+2. Software caused connection abort: socket write error (java.net.SocketException). Message payload is of type: HttpResponse (org.mule.execution.ResponseDispatchException)
+  org.mule.transport.http.HttpMessageProcessTemplate:141 (http://www.mulesoft.org/docs/site/current3/apidocs/org/mule/execution/ResponseDispatchException.html)
+--------------------------------------------------------------------------------
+Root Exception stack trace:
+java.net.SocketException: Software caused connection abort: socket write error
+	at java.net.SocketOutputStream.socketWrite0(Native Method)
+	at java.net.SocketOutputStream.socketWrite(SocketOutputStream.java:92)
+	at java.net.SocketOutputStream.write(SocketOutputStream.java:136)
+    + 3 more (set debug level logging or '-Dmule.verbose.exceptions=true' for everything)
+********************************************************************************
+
+[07-21 14:45:37] INFO  LoggerMessageProcessor [[electronics-store-app].HttpConnector.receiver.02]: Error occurred: org.mule.transport.http.HttpResponse@70a10795
+[07-21 14:45:37] INFO  DefaultTransportServiceDescriptor [[electronics-store-app].HttpConnector.receiver.02]: Loading default outbound transformer: org.mule.transport.email.transformers.ObjectToMimeMessage
+[07-21 14:45:37] INFO  AbstractLifecycleManager [[electronics-store-app].HttpConnector.receiver.02]: Initialising: 'Gmail.dispatcher.2291584'. Object is: SmtpMessageDispatcher
+[07-21 14:45:41] INFO  AbstractLifecycleManager [[electronics-store-app].HttpConnector.receiver.02]: Starting: 'Gmail.dispatcher.2291584'. Object is: SmtpMessageDispatcher
+[07-21 14:45:44] WARN  HttpMessageProcessTemplate [[electronics-store-app].HttpConnector.receiver.02]: Exception sending http response after error: Software caused connection abort: socket write error
+[07-21 14:45:44] ERROR DefaultSystemExceptionStrategy [[electronics-store-app].HttpConnector.receiver.02]: 
+********************************************************************************
+Message               : Software caused connection abort: socket write error (java.net.SocketException)
+Code                  : MULE_ERROR--2
+--------------------------------------------------------------------------------
+Exception stack is:
+1. Software caused connection abort: socket write error (java.net.SocketException)
+  java.net.SocketOutputStream:-2 (null)
+2. Software caused connection abort: socket write error (java.net.SocketException) (org.mule.api.DefaultMuleException)
+  org.mule.transport.http.HttpMessageProcessTemplate:172 (http://www.mulesoft.org/docs/site/current3/apidocs/org/mule/api/DefaultMuleException.html)
+--------------------------------------------------------------------------------
+Root Exception stack trace:
+java.net.SocketException: Software caused connection abort: socket write error
+	at java.net.SocketOutputStream.socketWrite0(Native Method)
+	at java.net.SocketOutputStream.socketWrite(SocketOutputStream.java:92)
+	at java.net.SocketOutputStream.write(SocketOutputStream.java:136)
+    + 3 more (set debug level logging or '-Dmule.verbose.exceptions=true' for everything)
+********************************************************************************
+

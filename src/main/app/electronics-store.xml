@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mule xmlns:context="http://www.springframework.org/schema/context"
+	version="EE-3.5.0" xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:core="http://www.mulesoft.org/schema/mule/core" xmlns:cxf="http://www.mulesoft.org/schema/mule/cxf"
+	xmlns:data-mapper="http://www.mulesoft.org/schema/mule/ee/data-mapper"
+	xmlns:db="http://www.mulesoft.org/schema/mule/db" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns:jbossts="http://www.mulesoft.org/schema/mule/jbossts"
+	xmlns:jersey="http://www.mulesoft.org/schema/mule/jersey" xmlns:jms="http://www.mulesoft.org/schema/mule/jms"
+	xmlns:mulexml="http://www.mulesoft.org/schema/mule/xml"
+	xmlns:scripting="http://www.mulesoft.org/schema/mule/scripting"
+	xmlns:smtp="http://www.mulesoft.org/schema/mule/smtp" xmlns:spring="http://www.springframework.org/schema/beans"
+	xmlns:tracking="http://www.mulesoft.org/schema/mule/ee/tracking"
+	xmlns:vm="http://www.mulesoft.org/schema/mule/vm" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd
+http://www.mulesoft.org/schema/mule/cxf http://www.mulesoft.org/schema/mule/cxf/current/mule-cxf.xsd
+http://www.mulesoft.org/schema/mule/jms http://www.mulesoft.org/schema/mule/jms/current/mule-jms.xsd
+http://www.mulesoft.org/schema/mule/smtp http://www.mulesoft.org/schema/mule/smtp/current/mule-smtp.xsd
+http://www.mulesoft.org/schema/mule/jersey http://www.mulesoft.org/schema/mule/jersey/current/mule-jersey.xsd
+http://www.mulesoft.org/schema/mule/ee/data-mapper http://www.mulesoft.org/schema/mule/ee/data-mapper/current/mule-data-mapper.xsd
+http://www.mulesoft.org/schema/mule/scripting http://www.mulesoft.org/schema/mule/scripting/current/mule-scripting.xsd
+http://www.mulesoft.org/schema/mule/vm http://www.mulesoft.org/schema/mule/vm/current/mule-vm.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/jbossts http://www.mulesoft.org/schema/mule/jbossts/current/mule-jbossts.xsd
+http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-current.xsd
+http://www.mulesoft.org/schema/mule/xml http://www.mulesoft.org/schema/mule/xml/current/mule-xml.xsd
+http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/current/mule-db.xsd
+http://www.mulesoft.org/schema/mule/ee/tracking http://www.mulesoft.org/schema/mule/ee/tracking/current/mule-tracking-ee.xsd
+http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-current.xsd">
+	<http:connector doc:name="HTTP\HTTPS" name="HttpConnector" />
+	
+	<jms:activemq-xa-connector brokerURL="vm://localhost"
+		doc:name="Active MQ" name="Active_MQ" validateConnections="true" />
+	
+	<cxf:configuration doc:description="Global CXF Configuration"
+		doc:name="CXF Configuration" initializeStaticBusInstance="false" />
+	
+	<data-mapper:config doc:name="DataMapper"
+		name="OrderItemToOrderRequest" transformationGraphPath="orderitemtoorderrequest_1.grf" />
+	
+	<data-mapper:config doc:name="DataMapper"
+		name="OrderResponseToPurchaseReceipt" transformationGraphPath="orderresponsetopurchasereceipt.grf" />
+	
+	<spring:beans>
+		<spring:bean class="org.enhydra.jdbc.standard.StandardXADataSource"
+			destroy-method="shutdown" id="Derby_Data_Source">
+			<spring:property name="driverName"
+				value="org.apache.derby.jdbc.EmbeddedDriver" />
+			<spring:property name="url"
+				value="jdbc:derby:muleEmbeddedDB;create=true" />
+		</spring:bean>
+	</spring:beans>
+	
+	<jbossts:transaction-manager doc:name="Transaction Manager">
+		<property key="com.arjuna.ats.arjuna.coordinator.defaultTimeout"
+			value="600" />
+		<property key="com.arjuna.ats.arjuna.coordinator.txReaperTimeout"
+			value="1000000" />
+	</jbossts:transaction-manager>
+	
+	<ee:object-store-caching-strategy
+		doc:name="Caching Strategy" keyGenerationExpression="#[payload.productId]"
+		name="Caching_Strategy">
+		<in-memory-store />
+	</ee:object-store-caching-strategy>
+	
+	<mulexml:namespace-manager
+		includeConfigNamespaces="true">
+		<mulexml:namespace prefix="soap"
+			uri="http://schemas.xmlsoap.org/soap/envelope/" />
+		<mulexml:namespace prefix="ord"
+			uri="http://orders.estore.mulesoft.com/" />
+	</mulexml:namespace-manager>
+	
+	<db:generic-config dataSource-ref="Derby_Data_Source"
+		doc:name="Generic Database Configuration" name="Generic_Database_Configuration" />
+	
+	<context:property-placeholder location="info.properties" />
+    <smtp:gmail-connector name="Gmail" validateConnections="true" doc:name="Gmail"/>
+	
+	<flow doc:name="process-order" name="process-order">
+		<http:inbound-endpoint connector-ref="HttpConnector"
+			doc:description="Process HTTP reqests or responses." doc:name="order-service-inbound"
+			exchange-pattern="request-response" host="${http.host}" path="${http.path.order.service}"
+			port="${http.port}" />
+		<cxf:jaxws-service doc:description="Make a web service available via CXF"
+			doc:name="order-webservice" serviceClass="com.mulesoft.estore.orders.IProcessOrder" />
+		<set-session-variable doc:name="total-value=0"
+			value="#[java.lang.Double.parseDouble(0.0)]" variableName="totalValue" />
+		<foreach collection="#[payload.orderItems]" doc:name="for-each-order-item">
+			<enricher doc:name="enrich-with-purchase-receipt"
+				target="#[rootMessage.payload.orderItems[counter - 1].purchaseReceipt]">
+				<choice doc:name="choice">
+					<when expression="#[payload.manufacturer == 'Samsung']">
+						<vm:outbound-endpoint doc:name="samsung-items-dispatcher"
+							exchange-pattern="request-response" path="${vm.samsung.items}" />
+					</when>
+					<otherwise>
+						<jms:outbound-endpoint connector-ref="Active_MQ"
+							doc:name="inhouse-order-dispatcher" exchange-pattern="request-response"
+							queue="${vm.inhouse.items}" />
+					</otherwise>
+				</choice>
+			</enricher>
+            <set-session-variable variableName="totalValue" value="#[totalValue += payload.purchaseReceipt.totalPrice]" doc:name="calculating totalValue"/>
+            <!-- <expression-transformer expression="#[totalValue += java.lang.Integer.parseInt(payload.purchaseReceipt.totalPrice)]" doc:name="calculating totalValue"/> -->
+		</foreach>
+		<vm:outbound-endpoint doc:name="order-audit-dispatcher"
+			exchange-pattern="one-way" mimeType="text/plain" path="${vm.order.audit}"
+			responseTimeout="10000" />
+		<catch-exception-strategy doc:name="catch-exception-strategy">
+			<flow-ref doc:name="default-error-handler" name="defaultErrorHandler" />
+		</catch-exception-strategy>
+	</flow>
+	
+	
+	
+	
+	
+	<sub-flow doc:name="defaultErrorHandler" name="defaultErrorHandler">
+		<logger doc:name="Log Error" level="INFO" message="Error occurred: #[payload]" />
+		<smtp:outbound-endpoint doc:name="Send Email to Operations"
+			host="smtp.gmail.com" responseTimeout="10000" connector-ref="Gmail" password="d3v3lop3r" port="587" replyTo="officetestemail@gmail.com" subject="Electronic Store Emails" to="mohammadrafiq1989@gmail.com" user="officetestemail%40gmail.com"/>
+	</sub-flow>
+	
+
+</mule>

@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns:db="http://www.mulesoft.org/schema/mule/db" xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xmlns:spring="http://www.springframework.org/schema/beans" version="EE-3.5.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/current/mule-db.xsd
+http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-current.xsd
+http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd">
+	<flow doc:name="database-initialisation" name="database-initialisation">
+		<http:inbound-endpoint connector-ref="HttpConnector"
+			doc:name="http-db-populate" exchange-pattern="request-response" host="${http.host}"
+			path="${http.path.db.populate}" port="${http.port}" />
+		<db:execute-ddl config-ref="Generic_Database_Configuration"
+			doc:name="create-orders-table">
+            <db:dynamic-query><![CDATA[CREATE TABLE orders (i int generated always as identity, product_id varchar(256), name varchar(256), manufacturer varchar(256), quantity integer, price integer)]]></db:dynamic-query>
+		</db:execute-ddl>
+		<db:execute-ddl config-ref="Generic_Database_Configuration"
+			doc:name="create-order-audits-table">
+            <db:dynamic-query><![CDATA[CREATE TABLE order_audits (i int generated always as identity, order_id varchar(256), total_value integer)]]></db:dynamic-query>
+		</db:execute-ddl>
+        <db:execute-ddl config-ref="Generic_Database_Configuration" doc:name="create-product-price-table">
+            <db:dynamic-query><![CDATA[CREATE TABLE product_price (id int generated always as identity, product_id varchar(256), price integer)]]></db:dynamic-query>
+        </db:execute-ddl>
+		<set-payload doc:name="set-payload-db-populated" value="db populated" />
+		<catch-exception-strategy doc:name="catch-exception-strategy">
+			<set-payload doc:name="'table already populated'" value="table already populated" />
+		</catch-exception-strategy>
+	</flow>
+</mule>
