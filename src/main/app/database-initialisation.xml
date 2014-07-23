@@ -38,24 +38,20 @@ PRIMARY KEY (PRODUCT_ID))]]></db:dynamic-query>
 ORDER_ID VARCHAR(255) NOT NULL,
 PRODUCT_ID INTEGER NOT NULL,
 QUANTITY INTEGER NOT NULL,
-STATUS VARCHAR(255) DEFAULT 'ACCEPT', 
+STATUS VARCHAR(255) DEFAULT 'ACCEPTED', 
 PRIMARY KEY (ORDER_ID),
 FOREIGN KEY (PRODUCT_ID) REFERENCES PRODUCTS(PRODUCT_ID))]]></db:dynamic-query>
 
 
 		</db:execute-ddl>
-
-		<db:execute-ddl config-ref="Generic_Database_Configuration"
-			doc:name="create-order-audits-table">
+        <db:execute-ddl config-ref="Generic_Database_Configuration" doc:name="create-order-audits-table">
             <db:dynamic-query><![CDATA[CREATE TABLE ORDERS_AUDITS
 (ID INTEGER NOT NULL GENERATED ALWAYS AS IDENTITY,
 ORDER_ID VARCHAR(255),
 TOTAL_AMOUNT FLOAT NOT NULL,
-PRIMARY KEY (ID),
-FOREIGN KEY (ORDER_ID) REFERENCES ORDERS(ORDER_ID))]]></db:dynamic-query>
+PRIMARY KEY (ORDER_ID))]]></db:dynamic-query>
+        </db:execute-ddl>
 
-
-		</db:execute-ddl>
         <db:insert config-ref="Generic_Database_Configuration" doc:name="insert-product-table">
             <db:parameterized-query><![CDATA[INSERT INTO PRODUCTS
 	(MANUFACTURER, PRODUCT_NAME, PRICE)
