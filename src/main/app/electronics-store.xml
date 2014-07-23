@@ -88,6 +88,8 @@ http://www.springframework.org/schema/context http://www.springframework.org/sch
 			doc:name="order-webservice" serviceClass="com.mulesoft.estore.orders.IProcessOrder" />
 		<set-session-variable doc:name="total-value=0"
 			value="#[java.lang.Double.parseDouble(0.0)]" variableName="totalValue" />
+        <set-session-variable variableName="orderId" value="#[java.util.UUID.randomUUID().toString()]" doc:name="create-unique-order-id"/>
+
 		<foreach collection="#[payload.orderItems]" doc:name="for-each-order-item">
 			<enricher doc:name="enrich-with-purchase-receipt"
 				target="#[rootMessage.payload.orderItems[counter - 1].purchaseReceipt]">
@@ -103,7 +105,7 @@ http://www.springframework.org/schema/context http://www.springframework.org/sch
 					</otherwise>
 				</choice>
 			</enricher>
-            <set-session-variable variableName="totalValue" value="#[totalValue += payload.purchaseReceipt.totalPrice]" doc:name="calculating totalValue"/>
+            <set-session-variable variableName="totalValue" value="#[totalValue += payload.purchaseReceipt.totalPrice]" doc:name="calculate-total-amount"/>
             <!-- <expression-transformer expression="#[totalValue += java.lang.Integer.parseInt(payload.purchaseReceipt.totalPrice)]" doc:name="calculating totalValue"/> -->
 		</foreach>
 		<vm:outbound-endpoint doc:name="order-audit-dispatcher"
