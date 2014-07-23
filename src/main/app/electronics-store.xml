@@ -29,20 +29,21 @@ http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/cu
 http://www.mulesoft.org/schema/mule/ee/tracking http://www.mulesoft.org/schema/mule/ee/tracking/current/mule-tracking-ee.xsd
 http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-current.xsd">
 	<http:connector doc:name="HTTP\HTTPS" name="HttpConnector" />
-	
+
 	<jms:activemq-xa-connector brokerURL="vm://localhost"
 		doc:name="Active MQ" name="Active_MQ" validateConnections="true" />
-	
+
 	<cxf:configuration doc:description="Global CXF Configuration"
 		doc:name="CXF Configuration" initializeStaticBusInstance="false" />
-	
+
 	<data-mapper:config doc:name="DataMapper"
 		name="OrderItemToOrderRequest" transformationGraphPath="orderitemtoorderrequest_1.grf" />
-	
+
 	<data-mapper:config doc:name="DataMapper"
 		name="OrderResponseToPurchaseReceipt" transformationGraphPath="orderresponsetopurchasereceipt.grf" />
-	
+
 	<spring:beans>
+		<context:property-placeholder location="info.properties" />
 		<spring:bean class="org.enhydra.jdbc.standard.StandardXADataSource"
 			destroy-method="shutdown" id="Derby_Data_Source">
 			<spring:property name="driverName"
@@ -51,20 +52,20 @@ http://www.springframework.org/schema/context http://www.springframework.org/sch
 				value="jdbc:derby:muleEmbeddedDB;create=true" />
 		</spring:bean>
 	</spring:beans>
-	
+
 	<jbossts:transaction-manager doc:name="Transaction Manager">
 		<property key="com.arjuna.ats.arjuna.coordinator.defaultTimeout"
 			value="600" />
 		<property key="com.arjuna.ats.arjuna.coordinator.txReaperTimeout"
 			value="1000000" />
 	</jbossts:transaction-manager>
-	
+
 	<ee:object-store-caching-strategy
 		doc:name="Caching Strategy" keyGenerationExpression="#[payload.productId]"
 		name="Caching_Strategy">
 		<in-memory-store />
 	</ee:object-store-caching-strategy>
-	
+
 	<mulexml:namespace-manager
 		includeConfigNamespaces="true">
 		<mulexml:namespace prefix="soap"
@@ -72,13 +73,14 @@ http://www.springframework.org/schema/context http://www.springframework.org/sch
 		<mulexml:namespace prefix="ord"
 			uri="http://orders.estore.mulesoft.com/" />
 	</mulexml:namespace-manager>
-	
+
 	<db:generic-config dataSource-ref="Derby_Data_Source"
 		doc:name="Generic Database Configuration" name="Generic_Database_Configuration" />
-	
+
 	<context:property-placeholder location="info.properties" />
-    <smtp:gmail-connector name="Gmail" validateConnections="true" doc:name="Gmail"/>
-	
+	<smtp:gmail-connector name="Gmail"
+		validateConnections="true" doc:name="Gmail" />
+
 	<flow doc:name="process-order" name="process-order">
 		<http:inbound-endpoint connector-ref="HttpConnector"
 			doc:description="Process HTTP reqests or responses." doc:name="order-service-inbound"
@@ -88,7 +90,8 @@ http://www.springframework.org/schema/context http://www.springframework.org/sch
 			doc:name="order-webservice" serviceClass="com.mulesoft.estore.orders.IProcessOrder" />
 		<set-session-variable doc:name="total-value=0"
 			value="#[java.lang.Double.parseDouble(0.0)]" variableName="totalValue" />
-        <set-session-variable variableName="orderId" value="#[java.util.UUID.randomUUID().toString()]" doc:name="create-unique-order-id"/>
+		<set-session-variable variableName="orderId"
+			value="#[java.util.UUID.randomUUID().toString()]" doc:name="create-unique-order-id" />
 
 		<foreach collection="#[payload.orderItems]" doc:name="for-each-order-item">
 			<enricher doc:name="enrich-with-purchase-receipt"
@@ -105,8 +108,11 @@ http://www.springframework.org/schema/context http://www.springframework.org/sch
 					</otherwise>
 				</choice>
 			</enricher>
-            <set-session-variable variableName="totalValue" value="#[totalValue += payload.purchaseReceipt.totalPrice]" doc:name="calculate-total-amount"/>
-            <!-- <expression-transformer expression="#[totalValue += java.lang.Integer.parseInt(payload.purchaseReceipt.totalPrice)]" doc:name="calculating totalValue"/> -->
+			<set-session-variable variableName="totalValue"
+				value="#[totalValue += payload.purchaseReceipt.totalPrice]"
+				doc:name="calculate-total-amount" />
+			<!-- <expression-transformer expression="#[totalValue += java.lang.Integer.parseInt(payload.purchaseReceipt.totalPrice)]" 
+				doc:name="calculating totalValue"/> -->
 		</foreach>
 		<vm:outbound-endpoint doc:name="order-audit-dispatcher"
 			exchange-pattern="one-way" mimeType="text/plain" path="${vm.order.audit}"
@@ -115,16 +121,19 @@ http://www.springframework.org/schema/context http://www.springframework.org/sch
 			<flow-ref doc:name="default-error-handler" name="defaultErrorHandler" />
 		</catch-exception-strategy>
 	</flow>
-	
-	
-	
-	
-	
+
+
+
+
+
 	<sub-flow doc:name="defaultErrorHandler" name="defaultErrorHandler">
 		<logger doc:name="Log Error" level="INFO" message="Error occurred: #[payload]" />
 		<smtp:outbound-endpoint doc:name="Send Email to Operations"
-			host="smtp.gmail.com" responseTimeout="10000" connector-ref="Gmail" password="d3v3lop3r" port="587" replyTo="officetestemail@gmail.com" subject="Electronic Store Emails" to="mohammadrafiq1989@gmail.com" user="officetestemail%40gmail.com"/>
+			host="smtp.gmail.com" responseTimeout="10000" connector-ref="Gmail"
+			password="d3v3lop3r" port="587" replyTo="officetestemail@gmail.com"
+			subject="Electronic Store Emails" to="mohammadrafiq1989@gmail.com"
+			user="officetestemail%40gmail.com" />
 	</sub-flow>
-	
+
 
 </mule>
