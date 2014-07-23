@@ -33,6 +33,7 @@ http://www.mulesoft.org/schema/mule/ee/data-mapper http://www.mulesoft.org/schem
                     <scripting:text><![CDATA[def receipt = new com.mulesoft.estore.orders.PurchaseReceipt(); 
 receipt.setStatus(com.mulesoft.estore.orders.Status.REJECTED); receipt.setTotalPrice(0);
 return receipt;]]></scripting:text>
+
 				</scripting:script>
 			</scripting:transformer>
 		</catch-exception-strategy>
