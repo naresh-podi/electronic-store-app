@@ -1,21 +1,26 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<mule xmlns:http="http://www.mulesoft.org/schema/mule/http"
+<mule xmlns:db="http://www.mulesoft.org/schema/mule/db"
+	xmlns:tracking="http://www.mulesoft.org/schema/mule/ee/tracking" xmlns:http="http://www.mulesoft.org/schema/mule/http"
 	xmlns:cxf="http://www.mulesoft.org/schema/mule/cxf" xmlns:data-mapper="http://www.mulesoft.org/schema/mule/ee/data-mapper"
 	xmlns:vm="http://www.mulesoft.org/schema/mule/vm" xmlns:scripting="http://www.mulesoft.org/schema/mule/scripting"
 	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
 	xmlns:spring="http://www.springframework.org/schema/beans" version="EE-3.5.0"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+	xsi:schemaLocation="http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/current/mule-db.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
 http://www.mulesoft.org/schema/mule/cxf http://www.mulesoft.org/schema/mule/cxf/current/mule-cxf.xsd
 http://www.mulesoft.org/schema/mule/vm http://www.mulesoft.org/schema/mule/vm/current/mule-vm.xsd
 http://www.mulesoft.org/schema/mule/scripting http://www.mulesoft.org/schema/mule/scripting/current/mule-scripting.xsd
 http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-current.xsd
 http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
-http://www.mulesoft.org/schema/mule/ee/data-mapper http://www.mulesoft.org/schema/mule/ee/data-mapper/current/mule-data-mapper.xsd">
+http://www.mulesoft.org/schema/mule/ee/data-mapper http://www.mulesoft.org/schema/mule/ee/data-mapper/current/mule-data-mapper.xsd
+http://www.mulesoft.org/schema/mule/ee/tracking http://www.mulesoft.org/schema/mule/ee/tracking/current/mule-tracking-ee.xsd">
 	<flow doc:name="process-samsung-items" name="process-samsung-items">
 		<vm:inbound-endpoint doc:name="samsung-items-receiver"
 			exchange-pattern="request-response" path="${vm.samsung.items}" />
+        <set-variable variableName="samsungItem" value="#[payload]" doc:name="store-samsung-item"/>
+
 		<data-mapper:transform config-ref="OrderItemToOrderRequest"
 			doc:name="orderitem-to-orderrequest" />
 		<flow-ref doc:name="invoke-samsung-webservice" name="samsungWebServiceClient" />
@@ -24,15 +29,23 @@ http://www.mulesoft.org/schema/mule/ee/data-mapper http://www.mulesoft.org/schem
 			<message-property-filter caseSensitive="true"
 				pattern="http.status=200" scope="inbound" />
 		</message-filter>
+        <set-variable variableName="orderResponse" value="#[payload]" doc:name="store-order-response"/>
+        <db:insert config-ref="Generic_Database_Configuration" doc:name="save-order-item">
+            <db:parameterized-query><![CDATA[insert into ORDERS (ID, ORDER_ID, PRODUCT_ID, QUANTITY, STATUS) values (default, #[sessionVars.orderId], #[samsungItem.productId], #[samsungItem.quantity], 'ACCEPTED')]]></db:parameterized-query>
+        </db:insert>
+        <set-payload value="#[orderResponse]" doc:name="set-order-response"/>
+
 		
 		<data-mapper:transform config-ref="OrderResponseToPurchaseReceipt"
 			doc:name="orderresponse-to-purchasereceipt" />
 		<catch-exception-strategy doc:name="catch-exception-strategy">
+            <logger message="Error message : #[payload]" level="INFO" doc:name="Logger"/>
 			<scripting:transformer doc:name="create-rejected-purchase-receipt">
 				<scripting:script engine="groovy">
                     <scripting:text><![CDATA[def receipt = new com.mulesoft.estore.orders.PurchaseReceipt(); 
 receipt.setStatus(com.mulesoft.estore.orders.Status.REJECTED); receipt.setTotalPrice(0);
 return receipt;]]></scripting:text>
+
 				</scripting:script>
 			</scripting:transformer>
 		</catch-exception-strategy>
@@ -44,4 +57,5 @@ return receipt;]]></scripting:text>
 			exchange-pattern="request-response" host="${http.host}" path="${service.orders.samsung}"
 			port="${http.port}" method="POST"/>
 	</sub-flow>
+
 </mule>
