@@ -105,7 +105,7 @@ http://www.springframework.org/schema/context http://www.springframework.org/sch
 					</otherwise>
 				</choice>
 			</enricher>
-            <set-session-variable variableName="totalValue" value="#[totalValue += payload.purchaseReceipt.totalPrice]" doc:name="calculating-total-amount"/>
+            <set-session-variable variableName="totalValue" value="#[totalValue += payload.purchaseReceipt.totalPrice]" doc:name="calculate-total-amount"/>
             <!-- <expression-transformer expression="#[totalValue += java.lang.Integer.parseInt(payload.purchaseReceipt.totalPrice)]" doc:name="calculating totalValue"/> -->
 		</foreach>
 		<vm:outbound-endpoint doc:name="order-audit-dispatcher"
