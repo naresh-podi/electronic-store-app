@@ -19,7 +19,8 @@ http://www.mulesoft.org/schema/mule/ee/tracking http://www.mulesoft.org/schema/m
         <expression-filter expression="#[totalValue &gt; 5000]" doc:name="total-value&gt;5000"/>
 		<db:insert config-ref="Generic_Database_Configuration"
 			doc:name="save-order-summary">
-            <db:parameterized-query><![CDATA[insert into order_audits values(default, #[payload.orderId], #[totalValue])]]></db:parameterized-query>
+            <db:parameterized-query><![CDATA[insert into orders_audits values(default, #[orderId], #[totalValue])]]></db:parameterized-query>
+
 		</db:insert>
 	</flow>
 </mule>
