@@ -17,9 +17,6 @@ http://www.mulesoft.org/schema/mule/quartz http://www.mulesoft.org/schema/mule/q
             <quartz:payload>db-initialised</quartz:payload>
         </quartz:event-generator-job>
     </quartz:inbound-endpoint>
-		<!-- <http:inbound-endpoint connector-ref="HttpConnector"
-			doc:name="http-db-populate" exchange-pattern="request-response" host="${http.host}"
-			path="${http.path.db.populate}" port="${http.port}" /> -->
         <db:execute-ddl config-ref="Generic_Database_Configuration" doc:name="create-products-table">
             <db:dynamic-query><![CDATA[CREATE TABLE PRODUCTS
 (PRODUCT_ID INTEGER NOT NULL GENERATED ALWAYS AS IDENTITY,
@@ -27,9 +24,11 @@ MANUFACTURER VARCHAR(255),
 PRODUCT_NAME VARCHAR(255),
 PRICE INTEGER NOT NULL,
 PRIMARY KEY (PRODUCT_ID))]]></db:dynamic-query>
-
-
         </db:execute-ddl>
+		<!-- <http:inbound-endpoint connector-ref="HttpConnector"
+			doc:name="http-db-populate" exchange-pattern="request-response" host="${http.host}"
+			path="${http.path.db.populate}" port="${http.port}" /> -->
+
 
 		<db:execute-ddl config-ref="Generic_Database_Configuration"
 			doc:name="create-orders-table">
@@ -39,7 +38,7 @@ ORDER_ID VARCHAR(255) NOT NULL,
 PRODUCT_ID INTEGER NOT NULL,
 QUANTITY INTEGER NOT NULL,
 STATUS VARCHAR(255) DEFAULT 'ACCEPTED', 
-PRIMARY KEY (ORDER_ID),
+PRIMARY KEY (ID),
 FOREIGN KEY (PRODUCT_ID) REFERENCES PRODUCTS(PRODUCT_ID))]]></db:dynamic-query>
 
 
