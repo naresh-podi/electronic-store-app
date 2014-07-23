@@ -46,7 +46,7 @@ FOREIGN KEY (PRODUCT_ID) REFERENCES PRODUCTS(PRODUCT_ID))]]></db:dynamic-query>
         <db:execute-ddl config-ref="Generic_Database_Configuration" doc:name="create-order-audits-table">
             <db:dynamic-query><![CDATA[CREATE TABLE ORDERS_AUDITS
 (ID INTEGER NOT NULL GENERATED ALWAYS AS IDENTITY,
-ORDER_ID VARCHAR(255),
+ORDER_ID VARCHAR(255) NOT NULL,
 TOTAL_AMOUNT FLOAT NOT NULL,
 PRIMARY KEY (ORDER_ID))]]></db:dynamic-query>
         </db:execute-ddl>
