@@ -36,7 +36,7 @@ public class ProductPrice {
 		String driver = "org.apache.derby.jdbc.EmbeddedDriver";
 		String dbURL = "jdbc:derby:muleEmbeddedDB;create=true";
 
-		System.out.println("--------------Getting Price started--------------");
+		System.out.println("--------------Getting Non-Samsung product price started--------------");
 
 		
 		// Derby DB connection
@@ -52,7 +52,7 @@ public class ProductPrice {
 			String price = rs.getString("PRICE");
 			System.out.println("PRICE: " + price);
 			System.out
-					.println("--------------Retreived Price successfully--------------");
+					.println("--------------Retreived Non-Samsung product price successfully--------------");
 
 			return price;
 		} else {
