@@ -23,7 +23,7 @@ http://www.mulesoft.org/schema/mule/ee/tracking http://www.mulesoft.org/schema/m
 
 		<data-mapper:transform config-ref="OrderItemToOrderRequest"
 			doc:name="orderitem-to-orderrequest" />
-		<flow-ref doc:name="invoke-samsung-webservice" name="samsungWebServiceClient" />
+		<flow-ref doc:name="invoke-samsung-web-service-get-price" name="samsung-web-service-get-price" />
 		<message-filter doc:name="filter-on-200-ok"
 			throwOnUnaccepted="true">
 			<message-property-filter caseSensitive="true"
@@ -32,28 +32,23 @@ http://www.mulesoft.org/schema/mule/ee/tracking http://www.mulesoft.org/schema/m
         <set-variable variableName="orderResponse" value="#[payload]" doc:name="store-order-response"/>
         <db:insert config-ref="Generic_Database_Configuration" doc:name="save-order-item">
             <db:parameterized-query><![CDATA[insert into ORDERS (ID, ORDER_ID, PRODUCT_ID, QUANTITY, STATUS) values (default, #[sessionVars.orderId], #[samsungItem.productId], #[samsungItem.quantity], 'ACCEPTED')]]></db:parameterized-query>
+
         </db:insert>
         <set-payload value="#[orderResponse]" doc:name="set-order-response"/>
-
 		
 		<data-mapper:transform config-ref="OrderResponseToPurchaseReceipt"
 			doc:name="orderresponse-to-purchasereceipt" />
+			
 		<catch-exception-strategy doc:name="catch-exception-strategy">
-            <logger message="Error message : #[payload]" level="INFO" doc:name="Logger"/>
-			<scripting:transformer doc:name="create-rejected-purchase-receipt">
-				<scripting:script engine="groovy">
-                    <scripting:text><![CDATA[def receipt = new com.mulesoft.estore.orders.PurchaseReceipt(); 
-receipt.setStatus(com.mulesoft.estore.orders.Status.REJECTED); receipt.setTotalPrice(0);
-return receipt;]]></scripting:text>
-
-				</scripting:script>
-			</scripting:transformer>
+            <logger message="Error message : #[payload]" level="INFO" doc:name="log-payload"/>
+            <component class="com.mulesoft.estore.orders.MakeRejectedPurchaseReceipt" doc:name="create-rejected-purchase-receipt"/>
 		</catch-exception-strategy>
 	</flow>
-	<sub-flow doc:name="samsungWebServiceClient" name="samsungWebServiceClient">
+	
+	<sub-flow doc:name="samsung-web-service-get-price" name="samsung-web-service-get-price">
 		<cxf:jaxws-client clientClass="com.mulesoft.estore.samsung.SamsungServiceService"
-			doc:name="samsung-webservice-client" operation="purchase" port="SamsungServicePort" />
-		<http:outbound-endpoint doc:name="samsung-rest-service"
+			doc:name="samsung-get-price" operation="purchase" port="SamsungServicePort" />
+		<http:outbound-endpoint doc:name="samsung-get-price"
 			exchange-pattern="request-response" host="${http.host}" path="${service.orders.samsung}"
 			port="${http.port}" method="POST"/>
 	</sub-flow>

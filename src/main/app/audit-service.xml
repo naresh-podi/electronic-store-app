@@ -22,5 +22,8 @@ http://www.mulesoft.org/schema/mule/ee/tracking http://www.mulesoft.org/schema/m
             <db:parameterized-query><![CDATA[insert into orders_audits values(default, #[orderId], #[totalValue])]]></db:parameterized-query>
 
 		</db:insert>
+		<catch-exception-strategy doc:name="catch-exception-strategy">
+			<flow-ref doc:name="send-notification-email" name="send-notification-email" />
+		</catch-exception-strategy>
 	</flow>
 </mule>
