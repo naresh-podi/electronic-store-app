@@ -16,9 +16,9 @@ http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/cor
 http://www.mulesoft.org/schema/mule/jbossts http://www.mulesoft.org/schema/mule/jbossts/current/mule-jbossts.xsd
 http://www.mulesoft.org/schema/mule/ee/tracking http://www.mulesoft.org/schema/mule/ee/tracking/current/mule-tracking-ee.xsd">
 
-	<flow doc:name="inhouse-order" name="inhouse-order">
+	<flow doc:name="non-samsung-order" name="non-samsung-order">
 		<jms:inbound-endpoint connector-ref="Active_MQ"
-			doc:name="inhouse-order-receiver" queue="${vm.inhouse.items}">
+			doc:name="non-samsung-order-receiver" queue="${vm.inhouse.items}">
 			<xa-transaction action="ALWAYS_BEGIN" />
 		</jms:inbound-endpoint>
 		<set-variable doc:name="initialise-price" value="0"
