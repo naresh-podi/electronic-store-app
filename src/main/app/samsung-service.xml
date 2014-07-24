@@ -18,8 +18,11 @@ http://www.mulesoft.org/schema/mule/ee/tracking http://www.mulesoft.org/schema/m
 			port="${http.port}" />
 		<cxf:jaxws-service doc:description="Make a web service available via CXF"
 			doc:name="order-webservice" serviceClass="com.mulesoft.estore.samsung.SamsungService" />
-		<component class="com.mulesoft.estore.samsung.SamsungServiceImpl"
-			doc:name="samsung-service-impl" />
+		<component doc:name="samsung-service-impl">
+			<singleton-object class="com.mulesoft.estore.samsung.SamsungServiceImpl">
+				<property value="${samsung.price}" key="samsungPrice" />
+			</singleton-object>
+		</component>
 	</flow>
 
 </mule>
