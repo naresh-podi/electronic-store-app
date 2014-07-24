@@ -12,16 +12,16 @@ import org.mule.munit.runner.functional.FunctionalMunitSuite;
 public class SamsungServiceTest extends FunctionalMunitSuite {
 
 	@Test
-	public void testFlightInformation() throws Exception {
+	public void testSamsungService() throws Exception {
 
-		MuleEvent responseEvent = runFlow("samsungService", testEvent(getRequestPayload()));
+		MuleEvent responseEvent = runFlow("samsung-rest-service", testEvent(getRequestPayload()));
 		System.out.println(responseEvent.getMessage().getPayloadAsString());
 		Assert.assertEquals(getExpectedResponsePayload(),responseEvent.getMessage().getPayloadAsString());
 	}
 
 	public String getRequestPayload() {
 
-		String request = "<soapenv:Envelope xmlns:soapenv=\"http://schemas.xmlsoap.org/soap/envelope/\" xmlns:sam=\"http://samsung.se.mulesoft.com/\">"
+		String request = "<soapenv:Envelope xmlns:soapenv=\"http://schemas.xmlsoap.org/soap/envelope/\" xmlns:sam=\"http://samsung.estore.mulesoft.com/\">"
 				+ "<soapenv:Header/>"
 				+ "<soapenv:Body>"
 				+ "<sam:purchase>"
@@ -37,7 +37,7 @@ public class SamsungServiceTest extends FunctionalMunitSuite {
 
 		String request = "<soap:Envelope xmlns:soap=\"http://schemas.xmlsoap.org/soap/envelope/\">"
 				+ "<soap:Body>"
-				+ "<ns2:purchaseResponse xmlns:ns2=\"http://samsung.se.mulesoft.com/\">"
+				+ "<ns2:purchaseResponse xmlns:ns2=\"http://samsung.estore.mulesoft.com/\">"
 				+ "<orderResponse>"
 				+ "<id>1</id>"
 				+ "<result>ACCEPTED</result>"
@@ -50,7 +50,7 @@ public class SamsungServiceTest extends FunctionalMunitSuite {
 	@Override
 	protected String getConfigResources() {
 		// TODO Auto-generated method stub
-		return "electronics-store.xml";
+		return "electronics-store.xml, samsung-service.xml";
 	}
 
 	@Override
