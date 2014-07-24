@@ -9,20 +9,20 @@ import org.mule.api.MuleEvent;
 import org.mule.api.config.MuleProperties;
 import org.mule.munit.runner.functional.FunctionalMunitSuite;
 
-public class OrderServiceTest extends FunctionalMunitSuite{
+public class ElectronicsStoreTest extends FunctionalMunitSuite{
 	
 	@Test
-	public void testFlightInformation() throws Exception {
+	public void testElectronicsStore() throws Exception {
 
-		MuleEvent responseEvent = runFlow("orderService", testEvent(getRequestPayload()));
+		MuleEvent responseEvent = runFlow("process-order", testEvent(getRequestPayload()));
 		System.out.println(responseEvent.getMessage().getPayloadAsString());
 		//assertEquals(getExpectedResponsePayload(),responseEvent.getMessage().getPayloadAsString());
-		Assert.assertNotNull(responseEvent.getMessage().getPayload());
+	    Assert.assertNotNull(responseEvent.getMessage().getPayload());
 	}
 
 	public String getRequestPayload() {
 
-		String request = "<soapenv:Envelope xmlns:soapenv=\"http://schemas.xmlsoap.org/soap/envelope/\" xmlns:ord=\"http://orders.se.mulesoft.com/\">"
+		String request = "<soapenv:Envelope xmlns:soapenv=\"http://schemas.xmlsoap.org/soap/envelope/\" xmlns:ord=\"http://orders.estore.mulesoft.com/\">"
 				+ "<soapenv:Header/>"
 				+ "<soapenv:Body>"
 				+ "<ord:processOrder>"
@@ -80,7 +80,7 @@ public class OrderServiceTest extends FunctionalMunitSuite{
 	@Override
 	protected String getConfigResources() {
 		// TODO Auto-generated method stub
-		return "electronics-store.xml";
+		return "electronics-store.xml, non-samsung-order.xml, process-samsung-items.xml,price-service.xml";
 	}
 
 	@Override
