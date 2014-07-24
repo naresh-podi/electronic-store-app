@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<mule xmlns:jbossts="http://www.mulesoft.org/schema/mule/jbossts" xmlns:tracking="http://www.mulesoft.org/schema/mule/ee/tracking" xmlns:jms="http://www.mulesoft.org/schema/mule/jms"
+<mule xmlns:vm="http://www.mulesoft.org/schema/mule/vm" xmlns:jbossts="http://www.mulesoft.org/schema/mule/jbossts" xmlns:tracking="http://www.mulesoft.org/schema/mule/ee/tracking" xmlns:jms="http://www.mulesoft.org/schema/mule/jms"
 	xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core"
 	xmlns:db="http://www.mulesoft.org/schema/mule/db" xmlns:scripting="http://www.mulesoft.org/schema/mule/scripting"
 	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
@@ -14,13 +14,14 @@ http://www.mulesoft.org/schema/mule/scripting http://www.mulesoft.org/schema/mul
 http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-current.xsd
 http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
 http://www.mulesoft.org/schema/mule/jbossts http://www.mulesoft.org/schema/mule/jbossts/current/mule-jbossts.xsd
-http://www.mulesoft.org/schema/mule/ee/tracking http://www.mulesoft.org/schema/mule/ee/tracking/current/mule-tracking-ee.xsd">
+http://www.mulesoft.org/schema/mule/ee/tracking http://www.mulesoft.org/schema/mule/ee/tracking/current/mule-tracking-ee.xsd
+http://www.mulesoft.org/schema/mule/vm http://www.mulesoft.org/schema/mule/vm/current/mule-vm.xsd">
 
 	<flow doc:name="non-samsung-order" name="non-samsung-order">
-		<jms:inbound-endpoint connector-ref="Active_MQ"
-			doc:name="non-samsung-order-receiver" queue="${vm.inhouse.items}">
+		<vm:inbound-endpoint doc:name="non-samsung-order-receiver" path="${vm.nonsamsung.items}" exchange-pattern="request-response">
 			<xa-transaction action="ALWAYS_BEGIN" />
-		</jms:inbound-endpoint>
+		</vm:inbound-endpoint>
+
 		<set-variable doc:name="initialise-price" value="0"
 			variableName="price" />
 		<enricher doc:name="enrich-with-price" target="#[price]">
@@ -37,16 +38,23 @@ http://www.mulesoft.org/schema/mule/ee/tracking http://www.mulesoft.org/schema/m
 			doc:name="save-order-item" transactionalAction="ALWAYS_JOIN">
             <db:parameterized-query><![CDATA[insert into ORDERS (ID, ORDER_ID, PRODUCT_ID, QUANTITY, STATUS) values (default, #[sessionVars.orderId], #[payload.productId], #[payload.quantity], 'ACCEPTED')]]></db:parameterized-query>
 		</db:insert>
-        <component class="com.mulesoft.estore.orders.MakePurchaseReceipt" doc:name="prepare-receipt"/>
 
-		<rollback-exception-strategy doc:name="rollback-exception-strategy"
+        <component class="com.mulesoft.estore.orders.MakePurchaseReceipt" doc:name="prepare-receipt"/>
+        
+        <catch-exception-strategy doc:name="catch-exception-strategy">
+            <logger message="Error message : #[payload]" level="INFO" doc:name="log-payload"/>
+            <component class="com.mulesoft.estore.orders.MakeRejectedPurchaseReceipt" doc:name="create-rejected-purchase-receipt"/>
+
+		</catch-exception-strategy>
+
+		<!-- <rollback-exception-strategy doc:name="rollback-exception-strategy"
 			maxRedeliveryAttempts="3">
 			<logger doc:name="logs- payload" level="INFO" message="#[payload]" />
 			<on-redelivery-attempts-exceeded
 				doc:name="Redelivery exhausted">
 				<flow-ref doc:name="invoke-default-error-handler" name="defaultErrorHandler" />
 			</on-redelivery-attempts-exceeded>
-		</rollback-exception-strategy>
+		</rollback-exception-strategy> -->
 	</flow>
 
 </mule>
