@@ -36,7 +36,7 @@ http://www.mulesoft.org/schema/mule/vm http://www.mulesoft.org/schema/mule/vm/cu
         <set-variable variableName="totalPrice" value="#[price * payload.quantity]" doc:name="calculate-total-price"/>
 		<db:insert config-ref="Generic_Database_Configuration"
 			doc:name="save-order-item" transactionalAction="ALWAYS_JOIN">
-            <db:parameterized-query><![CDATA[insert into ORDERS (ID, ORDER_ID, PRODUCT_ID, QUANTITY, STATUS) values (default, #[sessionVars.orderId], #[payload.productId], #[payload.quantity], 'ACCEPTED')]]></db:parameterized-query>
+            <db:parameterized-query><![CDATA[insert into ORDER_DETAILS (ID, ORDER_ID, PRODUCT_ID, QUANTITY, STATUS) values (default, #[sessionVars.orderId], #[payload.productId], #[payload.quantity], 'ACCEPTED')]]></db:parameterized-query>
 		</db:insert>
 
         <component class="com.mulesoft.estore.orders.MakePurchaseReceipt" doc:name="prepare-receipt"/>

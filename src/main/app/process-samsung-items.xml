@@ -31,7 +31,7 @@ http://www.mulesoft.org/schema/mule/ee/tracking http://www.mulesoft.org/schema/m
 		</message-filter>
         <set-variable variableName="orderResponse" value="#[payload]" doc:name="store-order-response"/>
         <db:insert config-ref="Generic_Database_Configuration" doc:name="save-order-item">
-            <db:parameterized-query><![CDATA[insert into ORDERS (ID, ORDER_ID, PRODUCT_ID, QUANTITY, STATUS) values (default, #[sessionVars.orderId], #[samsungItem.productId], #[samsungItem.quantity], 'ACCEPTED')]]></db:parameterized-query>
+            <db:parameterized-query><![CDATA[insert into ORDER_DETAILS (ID, ORDER_ID, PRODUCT_ID, QUANTITY, STATUS) values (default, #[sessionVars.orderId], #[samsungItem.productId], #[samsungItem.quantity], 'ACCEPTED')]]></db:parameterized-query>
 
         </db:insert>
         <set-payload value="#[orderResponse]" doc:name="set-order-response"/>

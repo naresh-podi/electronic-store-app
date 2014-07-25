@@ -13,7 +13,7 @@ http://www.springframework.org/schema/beans http://www.springframework.org/schem
 http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
 http://www.mulesoft.org/schema/mule/ee/tracking http://www.mulesoft.org/schema/mule/ee/tracking/current/mule-tracking-ee.xsd">
 
-	<flow doc:name="get-samsung-product-price-service" name="get-samsung-product-price-service">
+	<flow doc:name="samsung-rest-service" name="samsung-rest-service">
 		<http:inbound-endpoint connector-ref="HttpConnector"
 			doc:description="Process HTTP reqests or responses." doc:name="get-samsung-product-price"
 			exchange-pattern="request-response" host="${http.host}" path="${service.orders.samsung}"

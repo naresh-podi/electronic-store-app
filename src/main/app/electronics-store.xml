@@ -88,10 +88,16 @@ http://www.springframework.org/schema/context http://www.springframework.org/sch
 			port="${http.port}" />
 		<cxf:jaxws-service doc:description="Make a web service available via CXF"
 			doc:name="order-webservice" serviceClass="com.mulesoft.estore.orders.IProcessOrder" />
+        <set-variable variableName="processorOrder" value="#[payload]" doc:name="store-process-order"/>
 		<set-session-variable doc:name="total-amount=0"
 			value="#[java.lang.Double.parseDouble(0.0)]" variableName="totalValue" />
 		<set-session-variable variableName="orderId"
 			value="#[java.util.UUID.randomUUID().toString()]" doc:name="create-unique-order-id" />
+        <db:insert config-ref="Generic_Database_Configuration" doc:name="save-order-id">
+            <db:parameterized-query><![CDATA[INSERT INTO ORDERS VALUES (DEFAULT, #[orderId], DEFAULT)]]></db:parameterized-query>
+        </db:insert>
+        <set-payload value="#[processorOrder]" doc:name="set-process-order"/>
+
 
 		<foreach collection="#[payload.orderItems]" doc:name="for-each-order-item">
 			<enricher doc:name="enrich-with-purchase-receipt"
@@ -133,6 +139,7 @@ http://www.springframework.org/schema/context http://www.springframework.org/sch
 			user="officetestemail%40gmail.com" />
         <logger message="-----------Notification Email has been sent successfully-----------" level="INFO" doc:name="log-email-sent"/>
 	</flow>
+
 
 
 </mule>
