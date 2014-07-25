@@ -14,7 +14,7 @@ public class GetSamsungPriceServiceTest extends FunctionalMunitSuite {
 	@Test
 	public void testSamsungService() throws Exception {
 
-		MuleEvent responseEvent = runFlow("samsung-rest-service", testEvent(getRequestPayload()));
+		MuleEvent responseEvent = runFlow("get-samsung-product-price-service", testEvent(getRequestPayload()));
 		System.out.println(responseEvent.getMessage().getPayloadAsString());
 		Assert.assertEquals(getExpectedResponsePayload(),responseEvent.getMessage().getPayloadAsString());
 	}
