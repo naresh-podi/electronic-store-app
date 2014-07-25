@@ -122,8 +122,9 @@ http://www.springframework.org/schema/context http://www.springframework.org/sch
 		</catch-exception-strategy>
 	</flow>
 
-	<sub-flow doc:name="send-notification-email" name="send-notification-email">
-        <vm:outbound-endpoint exchange-pattern="one-way" path="send-notifation-email" doc:name="VM"/>
+	<flow doc:name="send-notification-email" name="send-notification-email">
+        <vm:inbound-endpoint exchange-pattern="one-way" path="send-notifation-email" doc:name="VM"/>
+        <set-payload value="#[exception.message]" doc:name="Set Payload"/>
 		<logger doc:name="log-error" level="INFO" message="Error occurred: #[payload]" />
 		<smtp:outbound-endpoint doc:name="send-notification-email"
 			host="smtp.gmail.com" responseTimeout="10000" connector-ref="Gmail"
@@ -131,7 +132,7 @@ http://www.springframework.org/schema/context http://www.springframework.org/sch
 			subject="Electronic Store Emails" to="mohammadrafiq1989@gmail.com"
 			user="officetestemail%40gmail.com" />
         <logger message="-----------Notification Email has been sent successfully-----------" level="INFO" doc:name="Logger"/>
-	</sub-flow>
+	</flow>
 
 
 </mule>
