@@ -80,7 +80,7 @@ public class ElectronicsStoreTest extends FunctionalMunitSuite{
 	@Override
 	protected String getConfigResources() {
 		// TODO Auto-generated method stub
-		return "electronics-store.xml, non-samsung-order.xml, process-samsung-items.xml,price-service.xml";
+		return "electronics-store.xml, process-non-samsung-items.xml, process-samsung-items.xml,get-non-samsung-price-service.xml";
 	}
 
 	@Override
