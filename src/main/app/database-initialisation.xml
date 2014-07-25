@@ -14,7 +14,7 @@ http://www.mulesoft.org/schema/mule/ee/tracking http://www.mulesoft.org/schema/m
 http://www.mulesoft.org/schema/mule/quartz http://www.mulesoft.org/schema/mule/quartz/current/mule-quartz.xsd">
 	<spring:beans>
 		<spring:bean id="DBSetup" name="DBSetupBean"
-			class="com.whiteskylabs.estore.DBSetup">
+			class="com.whiteskylabs.estore.DBUtil">
 			<spring:property name="derbyConnector"
 				ref="Generic_Database_Configuration" />
 		</spring:bean>

@@ -15,8 +15,11 @@ public class AuditServiceTest extends FunctionalMunitSuite {
 		MuleEvent testEvent = testEvent( "" );
 		testEvent.setFlowVariable("orderId", "2");
 		testEvent.setSessionVariable("totalValue", "12001");
+		
 		MuleEvent responseEvent = runFlow("audit-service", testEvent);
+		
 		System.out.println(responseEvent.getMessage().getPayloadAsString());
+		
 		Assert.assertEquals("1", responseEvent.getMessage()
 				.getPayloadAsString());
 	}
