@@ -1,0 +1,1 @@
+INSERT INTO PRODUCTS (MANUFACTURER, PRODUCT_NAME, PRICE) VALUES 	('Samsung', 'S-1',12345 ),('Samsung', 'S-2',2100 ), ('Samsung', 'S-3',2200 ), ('Samsung', 'S-4',4500), ('Samsung', 'S-5',40987 ), ('Philips', 'P-1',12345 ), ('Bajaj', 'B1',9870), ('Bajaj', 'B-2',12345 ), ('Apple', 'A-1',12345 ), ('Apple', 'A-2',12345 );
