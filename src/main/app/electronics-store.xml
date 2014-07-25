@@ -103,7 +103,7 @@ http://www.springframework.org/schema/context http://www.springframework.org/sch
 					</when>
 					<otherwise>
 						<vm:outbound-endpoint
-							doc:name="inhouse-order-dispatcher" exchange-pattern="request-response"
+							doc:name="non-samsung-item-dispatcher" exchange-pattern="request-response"
 							path="${vm.nonsamsung.items}" />
 					</otherwise>
 				</choice>
