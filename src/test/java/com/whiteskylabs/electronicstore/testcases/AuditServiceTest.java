@@ -14,13 +14,20 @@ public class AuditServiceTest extends FunctionalMunitSuite {
 	@Test
 	public void testAuditService() throws Exception {
 
-		MuleEvent testEvent = testEvent( "" );
+		MuleEvent testEvent = testEvent("");
+		
+		// set a unique ID
 		testEvent.setFlowVariable("orderId", UUID.randomUUID().toString());
 		testEvent.setSessionVariable("totalValue", "12001");
 		MuleEvent responseEvent = runFlow("audit-service", testEvent);
 		System.out.println(responseEvent.getMessage().getPayloadAsString());
-		Assert.assertEquals("1", responseEvent.getMessage()
-				.getPayloadAsString());
+
+		Assert.assertTrue(responseEvent
+				.getMessage()
+				.getPayloadAsString()
+				.contains(
+						"INSERT on table 'ORDER_AUDITS' caused a violation of foreign key constraint"));
+
 	}
 
 	@Override
