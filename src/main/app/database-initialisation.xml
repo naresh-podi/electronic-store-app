@@ -23,7 +23,7 @@ http://www.mulesoft.org/schema/mule/quartz http://www.mulesoft.org/schema/mule/q
 	<flow doc:name="database-initialisation" name="database-initialisation"
 		initialState="started">
 		<quartz:inbound-endpoint name="runOnce"
-			repeatCount="0" repeatInterval="5001" jobName="trigger-db" doc:name="Quartz"
+			repeatCount="0" repeatInterval="5001" jobName="trigger-db" doc:name="invoke-db-intialization"
 			responseTimeout="10000">
 			<quartz:event-generator-job>
 				<quartz:payload>db-initialised</quartz:payload>
@@ -35,7 +35,7 @@ http://www.mulesoft.org/schema/mule/quartz http://www.mulesoft.org/schema/mule/q
 		</component>
 
 		<catch-exception-strategy doc:name="catch-exception-strategy">
-			<set-payload doc:name="'table already populated'" value="#[exception.message()]" />
+			<set-payload doc:name="table-already-populated" value="#[exception.message()]" />
 		</catch-exception-strategy>
 	</flow>
 </mule>

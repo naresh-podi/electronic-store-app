@@ -88,10 +88,16 @@ http://www.springframework.org/schema/context http://www.springframework.org/sch
 			port="${http.port}" />
 		<cxf:jaxws-service doc:description="Make a web service available via CXF"
 			doc:name="order-webservice" serviceClass="com.mulesoft.estore.orders.IProcessOrder" />
+        <set-variable variableName="processorOrder" value="#[payload]" doc:name="store-process-order"/>
 		<set-session-variable doc:name="total-amount=0"
 			value="#[java.lang.Double.parseDouble(0.0)]" variableName="totalValue" />
 		<set-session-variable variableName="orderId"
 			value="#[java.util.UUID.randomUUID().toString()]" doc:name="create-unique-order-id" />
+        <db:insert config-ref="Generic_Database_Configuration" doc:name="save-order-id">
+            <db:parameterized-query><![CDATA[INSERT INTO ORDERS VALUES (DEFAULT, #[orderId], DEFAULT)]]></db:parameterized-query>
+        </db:insert>
+        <set-payload value="#[processorOrder]" doc:name="set-process-order"/>
+
 
 		<foreach collection="#[payload.orderItems]" doc:name="for-each-order-item">
 			<enricher doc:name="enrich-with-purchase-receipt"
@@ -118,21 +124,22 @@ http://www.springframework.org/schema/context http://www.springframework.org/sch
 			exchange-pattern="one-way" mimeType="text/plain" path="${vm.order.audit}"
 			responseTimeout="10000" />
 		<catch-exception-strategy doc:name="catch-exception-strategy">
-            <vm:outbound-endpoint exchange-pattern="one-way" path="send-notifation-email" doc:name="VM"/>
+            <vm:outbound-endpoint exchange-pattern="one-way" path="send-notifation-email" doc:name="send-notification-email"/>
 		</catch-exception-strategy>
 	</flow>
 
 	<flow doc:name="send-notification-email" name="send-notification-email">
-        <vm:inbound-endpoint exchange-pattern="one-way" path="send-notifation-email" doc:name="VM"/>
-        <set-payload value="#[exception.message]" doc:name="Set Payload"/>
+        <vm:inbound-endpoint exchange-pattern="one-way" path="send-notifation-email" doc:name="send-notification-email"/>
+        <set-payload value="#[exception.message]" doc:name="set-error-message"/>
 		<logger doc:name="log-error" level="INFO" message="Error occurred: #[payload]" />
 		<smtp:outbound-endpoint doc:name="send-notification-email"
 			host="smtp.gmail.com" responseTimeout="10000" connector-ref="Gmail"
 			password="d3v3lop3r" port="587" replyTo="officetestemail@gmail.com"
 			subject="Electronic Store Emails" to="mohammadrafiq1989@gmail.com"
 			user="officetestemail%40gmail.com" />
-        <logger message="-----------Notification Email has been sent successfully-----------" level="INFO" doc:name="Logger"/>
+        <logger message="-----------Notification Email has been sent successfully-----------" level="INFO" doc:name="log-email-sent"/>
 	</flow>
+
 
 
 </mule>
