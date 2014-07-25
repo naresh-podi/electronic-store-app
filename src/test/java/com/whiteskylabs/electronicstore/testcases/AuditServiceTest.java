@@ -2,6 +2,8 @@ package com.whiteskylabs.electronicstore.testcases;
 
 import java.io.File;
 import java.util.Properties;
+import java.util.UUID;
+
 import junit.framework.Assert;
 import org.junit.Test;
 import org.mule.api.MuleEvent;
@@ -13,13 +15,10 @@ public class AuditServiceTest extends FunctionalMunitSuite {
 	public void testAuditService() throws Exception {
 
 		MuleEvent testEvent = testEvent( "" );
-		testEvent.setFlowVariable("orderId", "2");
+		testEvent.setFlowVariable("orderId", UUID.randomUUID().toString());
 		testEvent.setSessionVariable("totalValue", "12001");
-		
 		MuleEvent responseEvent = runFlow("audit-service", testEvent);
-		
 		System.out.println(responseEvent.getMessage().getPayloadAsString());
-		
 		Assert.assertEquals("1", responseEvent.getMessage()
 				.getPayloadAsString());
 	}
