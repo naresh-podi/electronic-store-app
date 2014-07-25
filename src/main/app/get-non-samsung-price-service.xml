@@ -12,7 +12,7 @@ http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/cor
 http://www.mulesoft.org/schema/mule/ee/tracking http://www.mulesoft.org/schema/mule/ee/tracking/current/mule-tracking-ee.xsd
 http://www.mulesoft.org/schema/mule/vm http://www.mulesoft.org/schema/mule/vm/current/mule-vm.xsd">
 	<flow doc:name="non-samsung-price-service" name="non-samsung-price-service">
-		<http:inbound-endpoint connector-ref="HttpConnector"
+		<http:inbound-endpoint 
 			doc:name="non-samsung-price-service" exchange-pattern="request-response" host="${http.host}"
 			path="${api.price}" port="${http.port}" />
 		<jersey:resources doc:name="get-non-samsung-product-price">
