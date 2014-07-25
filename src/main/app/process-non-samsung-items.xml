@@ -18,7 +18,7 @@ http://www.mulesoft.org/schema/mule/ee/tracking http://www.mulesoft.org/schema/m
 http://www.mulesoft.org/schema/mule/vm http://www.mulesoft.org/schema/mule/vm/current/mule-vm.xsd">
 
 	<flow doc:name="non-samsung-order" name="non-samsung-order">
-		<vm:inbound-endpoint doc:name="non-samsung-order-receiver" path="${vm.nonsamsung.items}" exchange-pattern="request-response">
+		<vm:inbound-endpoint doc:name="non-samsung-items-receiver" path="${vm.nonsamsung.items}" exchange-pattern="request-response">
 			<xa-transaction action="ALWAYS_BEGIN" />
 		</vm:inbound-endpoint>
 
