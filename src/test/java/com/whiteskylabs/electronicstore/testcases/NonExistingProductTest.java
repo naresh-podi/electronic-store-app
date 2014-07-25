@@ -29,6 +29,9 @@ public class NonExistingProductTest extends FunctionalMunitSuite {
 		Assert.assertEquals(getNonSamsungResponsePayload(), response.getMessage().getPayloadAsString());
 	}
 	
+	/** Get Request payload for Non-existing product order
+	 * @return Non-existing request payload.
+	 */
 	public String getNonSamsungRequestPayload(){
 		
 		String request = "<soapenv:Envelope xmlns:soapenv=\"http://schemas.xmlsoap.org/soap/envelope/\" xmlns:ord=\"http://orders.estore.mulesoft.com/\">"
@@ -58,6 +61,9 @@ public class NonExistingProductTest extends FunctionalMunitSuite {
 		return request;
 	}
 	
+	/** Get expected response payload Non-existing product order.
+	 * @return Response of Non-existing product order
+	 */
 	public String getNonSamsungResponsePayload(){
 		
 		String nonSamsungResponse = "<soap:Envelope xmlns:soap=\"http://schemas.xmlsoap.org/soap/envelope/\">"
@@ -90,7 +96,10 @@ public class NonExistingProductTest extends FunctionalMunitSuite {
 		return nonSamsungResponse;
 	}
 	
-public PurchaseReceipt mockPurchaseReceipt(){
+	/** Get Purchase Receipt
+	 * @return Purchase Receipt
+	 */
+	public PurchaseReceipt mockPurchaseReceipt(){
 		
 		PurchaseReceipt purchaseReceipt = new PurchaseReceipt(); 
 

@@ -22,15 +22,19 @@ public class SamsungOrderMainFlowTest extends FunctionalMunitSuite {
 	@Test
 	public void testSamsungFLow() throws MuleException, Exception{
 		
-		whenEndpointWithAddress("vm://samsungOrder").thenReturn(muleMessageWithPayload(mockPurchaseReceipt()));
+		whenEndpointWithAddress("vm://samsungOrder").thenReturn(muleMessageWithPayload(getPurchaseReceipt()));
 		
 		MuleEvent response = runFlow("process-order", testEvent(getSamsungRequestPayload()));
 		
 		System.out.println(":::::RESPONSE:::::"+response.getMessage().getPayloadAsString());
 		
-		Assert.assertEquals(getSamsungResponsePayload(), response.getMessage().getPayloadAsString());
+		Assert.assertEquals(getExpectedSamsungResponsePayload(), response.getMessage().getPayloadAsString());
 	}
 	
+	
+	/** Get Request payload for Samsung product order
+	 * @return Samsung request payload
+	 */
 	public String getSamsungRequestPayload(){
 		
 		String request = "<soapenv:Envelope xmlns:soapenv=\"http://schemas.xmlsoap.org/soap/envelope/\" xmlns:ord=\"http://orders.estore.mulesoft.com/\">"
@@ -60,7 +64,10 @@ public class SamsungOrderMainFlowTest extends FunctionalMunitSuite {
 		return request;
 	}
 	
-	public String getSamsungResponsePayload(){
+	/** Get expected response payload Samsung product order.
+	 * @return Response of Samsung product order
+	 */
+	public String getExpectedSamsungResponsePayload(){
 		
 		String samsungResponse = "<soap:Envelope xmlns:soap=\"http://schemas.xmlsoap.org/soap/envelope/\">"
 								   +"<soap:Body>"
@@ -94,7 +101,10 @@ public class SamsungOrderMainFlowTest extends FunctionalMunitSuite {
 		
 	}
 	
-public PurchaseReceipt mockPurchaseReceipt(){
+	/** Get Purchase Receipt
+	 * @return Purchase Receipt
+	 */
+	public PurchaseReceipt getPurchaseReceipt(){
 		
 		PurchaseReceipt purchaseReceipt = new PurchaseReceipt(); 
 

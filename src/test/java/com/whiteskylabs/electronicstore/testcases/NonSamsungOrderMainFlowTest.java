@@ -29,6 +29,9 @@ public class NonSamsungOrderMainFlowTest extends FunctionalMunitSuite {
 		Assert.assertEquals(getNonSamsungResponsePayload(), response.getMessage().getPayloadAsString());
 	}
 	
+	/** Get Request payload for Non-Samsung product order
+	 * @return Non-Samsung request payload.
+	 */
 	public String getNonSamsungRequestPayload(){
 		
 		String request = "<soapenv:Envelope xmlns:soapenv=\"http://schemas.xmlsoap.org/soap/envelope/\" xmlns:ord=\"http://orders.estore.mulesoft.com/\">"
@@ -58,6 +61,9 @@ public class NonSamsungOrderMainFlowTest extends FunctionalMunitSuite {
 		return request;
 	}
 	
+	/** Get expected response payload Non-Samsung product order.
+	 * @return Response of Non-Samsung product order
+	 */
 	public String getNonSamsungResponsePayload(){
 		
 		String nonSamsungResponse = "<soap:Envelope xmlns:soap=\"http://schemas.xmlsoap.org/soap/envelope/\">"
@@ -92,7 +98,10 @@ public class NonSamsungOrderMainFlowTest extends FunctionalMunitSuite {
 		
 	}
 	
-public PurchaseReceipt mockPurchaseReceipt(){
+	/** Get Purchase Receipt
+	 * @return Purchase Receipt
+	 */
+	public PurchaseReceipt mockPurchaseReceipt(){
 		
 		PurchaseReceipt purchaseReceipt = new PurchaseReceipt(); 
 
