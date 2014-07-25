@@ -23,7 +23,7 @@ http://www.mulesoft.org/schema/mule/ee/tracking http://www.mulesoft.org/schema/m
 
 		<data-mapper:transform config-ref="OrderItemToOrderRequest"
 			doc:name="orderitem-to-orderrequest" />
-		<flow-ref doc:name="invoke-samsung-web-service-get-price" name="samsung-web-service-get-price" />
+		<flow-ref doc:name="invoke-get-samsung-product-price-web-service" name="get-samsung-product-price" />
 		<message-filter doc:name="filter-on-200-ok"
 			throwOnUnaccepted="true">
 			<message-property-filter caseSensitive="true"
@@ -37,7 +37,7 @@ http://www.mulesoft.org/schema/mule/ee/tracking http://www.mulesoft.org/schema/m
         <set-payload value="#[orderResponse]" doc:name="set-order-response"/>
 		
 		<data-mapper:transform config-ref="OrderResponseToPurchaseReceipt"
-			doc:name="orderresponse-to-purchasereceipt" />
+			doc:name="order-response-to-purchase-receipt" />
 			
 		<catch-exception-strategy doc:name="catch-exception-strategy">
             <logger message="Error message : #[payload]" level="INFO" doc:name="log-payload"/>
@@ -45,10 +45,10 @@ http://www.mulesoft.org/schema/mule/ee/tracking http://www.mulesoft.org/schema/m
 		</catch-exception-strategy>
 	</flow>
 	
-	<sub-flow doc:name="samsung-web-service-get-price" name="samsung-web-service-get-price">
+	<sub-flow doc:name="get-samsung-product-price" name="get-samsung-product-price">
 		<cxf:jaxws-client clientClass="com.mulesoft.estore.samsung.SamsungServiceService"
-			doc:name="samsung-get-price" operation="purchase" port="SamsungServicePort" />
-		<http:outbound-endpoint doc:name="samsung-get-price"
+			doc:name="get-samsung-product-price" operation="purchase" port="SamsungServicePort" />
+		<http:outbound-endpoint doc:name="get-samsung-product-price"
 			exchange-pattern="request-response" host="${http.host}" path="${service.orders.samsung}"
 			port="${http.port}" method="POST"/>
 	</sub-flow>
