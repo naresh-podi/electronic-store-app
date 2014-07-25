@@ -1,11 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<mule xmlns:tracking="http://www.mulesoft.org/schema/mule/ee/tracking" xmlns:http="http://www.mulesoft.org/schema/mule/http"
+<mule xmlns:vm="http://www.mulesoft.org/schema/mule/vm"
+	xmlns:tracking="http://www.mulesoft.org/schema/mule/ee/tracking" xmlns:http="http://www.mulesoft.org/schema/mule/http"
 	xmlns:cxf="http://www.mulesoft.org/schema/mule/cxf" xmlns="http://www.mulesoft.org/schema/mule/core"
 	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
 	xmlns:spring="http://www.springframework.org/schema/beans" version="EE-3.5.0"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+	xsi:schemaLocation="
+http://www.mulesoft.org/schema/mule/vm http://www.mulesoft.org/schema/mule/vm/current/mule-vm.xsd http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
 http://www.mulesoft.org/schema/mule/cxf http://www.mulesoft.org/schema/mule/cxf/current/mule-cxf.xsd
 http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-current.xsd
 http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
@@ -18,8 +20,15 @@ http://www.mulesoft.org/schema/mule/ee/tracking http://www.mulesoft.org/schema/m
 			port="${http.port}" />
 		<cxf:jaxws-service doc:description="Make a web service available via CXF"
 			doc:name="order-webservice" serviceClass="com.mulesoft.estore.samsung.SamsungService" />
-		<component class="com.mulesoft.estore.samsung.SamsungServiceImpl"
-			doc:name="samsung-service-impl" />
+		<component doc:name="samsung-service-impl">
+			<singleton-object class="com.mulesoft.estore.samsung.SamsungServiceImpl">
+				<property value="${samsung.price}" key="samsungPrice" />
+			</singleton-object>
+		</component>
+		<catch-exception-strategy doc:name="Catch Exception Strategy">
+            <logger message="#[exception.message]" level="INFO" doc:name="log-error-message"/>
+            <vm:outbound-endpoint exchange-pattern="one-way" path="send-notifation-email" doc:name="send-notifation-email"/>
+        </catch-exception-strategy>
 	</flow>
 
 </mule>
