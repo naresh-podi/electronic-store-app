@@ -17,6 +17,7 @@ http://www.mulesoft.org/schema/mule/quartz http://www.mulesoft.org/schema/mule/q
 			class="com.whiteskylabs.estore.DBUtil">
 			<spring:property name="derbyConnector"
 				ref="Generic_Database_Configuration" />
+			<spring:property name="sqlDirLocation" value="${sql.dir.location}"/>
 		</spring:bean>
 	</spring:beans>
 
@@ -30,8 +31,7 @@ http://www.mulesoft.org/schema/mule/quartz http://www.mulesoft.org/schema/mule/q
 			</quartz:event-generator-job>
 		</quartz:inbound-endpoint>
 		<component doc:name="db-setup">
-			<spring-object bean="DBSetup">
-			</spring-object>
+			<spring-object bean="DBSetupBean"/>
 		</component>
 
 		<catch-exception-strategy doc:name="catch-exception-strategy">
