@@ -41,7 +41,7 @@ public class SamsungServiceTest extends FunctionalMunitSuite {
 				+ "<orderResponse>"
 				+ "<id>1</id>"
 				+ "<result>ACCEPTED</result>"
-				+ "<price>30600</price>"
+				+ "<price>27000</price>"
 				+ "</orderResponse>" + "</ns2:purchaseResponse>"
 				+ "</soap:Body>" + "</soap:Envelope>";
 		return request;
@@ -50,7 +50,7 @@ public class SamsungServiceTest extends FunctionalMunitSuite {
 	@Override
 	protected String getConfigResources() {
 		// TODO Auto-generated method stub
-		return "electronics-store.xml, samsung-service.xml";
+		return "electronics-store.xml, get-samsung-price-service.xml";
 	}
 
 	@Override
