@@ -53,6 +53,7 @@ public class DBUtil implements Callable {
 	 * 
 	 */
 	private void initializeSetup() {
+		boolean isDBcreated = false;
 		log.info("--------------DB Setup initialized--------------");
 		try {
 			connectionObj = derbyConnector.getDataSource().getConnection();
@@ -64,33 +65,24 @@ public class DBUtil implements Callable {
 
 			for (String query : queries) {
 
+				
 				String tblName = getTableName(query);
+				
+				//Get table from Database.
 				ResultSet rs = dbmd.getTables(null, null, tblName, null);
-				System.out.println(rs.getMetaData().getColumnCount());
+
+				// If table doesn't exist
 				if (!rs.next() ) {
 					doExecute(query);
 					log.info(tblName + " table is created/Updated");
+					isDBcreated = true;
+				}
+				// Insert records after tables are created based on a flag 'isDBCreated' 
+				else if(isDBcreated){
+					doExecute(query);
+					log.info(tblName + " have been inserted");
 				}
 				
-				/*if (query.contains("CREATE TABLE")) {
-					String tblName = getTableName(query);
-					ResultSet rs = dbmd.getTables(null, null, tblName, null);
-					if (!rs.next()) {
-						doExecute(query);
-						log.info(tblName + " table is created");
-					} else {
-						log.info(tblName + " table already created");
-					}
-				}else if (query.contains("INSERT INTO PRODUCTS")) {
-					ResultSet rs = dbmd.getTables(null, null, "PRODUCTS", null);
-					if (rs.next()) {
-						System.out.println(rs.getMetaData().getColumnCount());
-						System.out.println(":::::");				
-					}
-				}
-				else {
-					doExecute(query);
-				}*/
 			}
 			log.info("DB Setup completed");
 		} catch (Exception e) {
@@ -136,7 +128,7 @@ public class DBUtil implements Callable {
 				}
 			}
 		}else{
-			throw new Exception("no db directories is defined");
+			throw new Exception("no db directories are defined");
 		}
 		return sqlPaths;
 	}
@@ -149,7 +141,7 @@ public class DBUtil implements Callable {
 
 		SQLReader sqlread = new SQLReader();
 		ArrayList<String> sqlQuries = new ArrayList<String>();
-		ArrayList<String> tempCr = new ArrayList<String>();
+		ArrayList<String> qryList = new ArrayList<String>();
 		ArrayList<String> tempInsrt = new ArrayList<String>();
 		ArrayList<String> others = new ArrayList<String>();
 
@@ -158,7 +150,7 @@ public class DBUtil implements Callable {
 		for (String filePath : SqlFiles) {
 			if (filePath.endsWith("Create-quries.sql")) {
 				ArrayList<String> crList = sqlread.createQueries(filePath);
-				tempCr.addAll(crList);
+				qryList.addAll(crList);
 
 			} else if (filePath.endsWith("Insert-quries.sql")) {
 				tempInsrt.addAll(sqlread.createQueries(filePath));
@@ -167,7 +159,7 @@ public class DBUtil implements Callable {
 			}
 		}
 		//sorting queries
-		sqlQuries.addAll(tempCr);
+		sqlQuries.addAll(qryList);
 		sqlQuries.addAll(tempInsrt);
 		sqlQuries.addAll(others);
 
