@@ -33,6 +33,7 @@ bin/
 activemq-data/
 ObjectStore/
 derby.log
+.mule/
 
 # Locally stored "Eclipse launch configurations"
 *.launch
