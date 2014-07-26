@@ -24,6 +24,7 @@ public class DBUtil implements Callable {
 	private final static Logger log = Logger.getLogger(DBUtil.class.getName());
 
 	public GenericDbConfig derbyConnector;
+	private String sqlDirLocation;
 
 	public GenericDbConfig getDerbyConnector() {
 		return derbyConnector;
@@ -31,6 +32,14 @@ public class DBUtil implements Callable {
 
 	public void setDerbyConnector(GenericDbConfig derbyConnector) {
 		this.derbyConnector = derbyConnector;
+	}
+	
+	public String getSqlDirLocation() {
+		return sqlDirLocation;
+	}
+
+	public void setSqlDirLocation(String sqlDirLocation) {
+		this.sqlDirLocation = sqlDirLocation;
 	}
 
 	/**
@@ -100,15 +109,15 @@ public class DBUtil implements Callable {
 	private ArrayList<String> getSQLFilePaths() throws Exception {
 		Properties prop = new Properties();
 		ArrayList<String> sqlPaths = new ArrayList<String>();
+
 		// Location of folder name "db-queries"
-		
 		String dirPath = getClass().getProtectionDomain().getCodeSource().getLocation().getPath();
-		//loading properties file				
-		prop.load(new FileInputStream(dirPath+"info.properties"));
 		
-		String sqlDirLoc = prop.getProperty("sql.dir.location");
+		String sqlDirLoc = getSqlDirLocation();
+		
 		// pointing to "db-queries"
 		File dirObject = new File(dirPath+sqlDirLoc);
+		
 		// List of childs(i.e files and folders from db-queries directory)
 		String[] child = dirObject.list();
 		
