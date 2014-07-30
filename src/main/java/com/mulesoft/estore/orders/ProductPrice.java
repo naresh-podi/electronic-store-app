@@ -16,8 +16,8 @@ public class ProductPrice {
 
 	@GET
 	@Path("/{productId}")
-	@Produces(MediaType.TEXT_PLAIN)
-	public String getProductPrice(@PathParam("productId") String productId)
+	@Produces(MediaType.APPLICATION_JSON)
+	public int getProductPrice(@PathParam("productId") String productId)
 			throws Exception {
 
 		return getPrice(Integer.parseInt(productId));
@@ -29,7 +29,7 @@ public class ProductPrice {
 	 * @return Product price
 	 * @throws Exception
 	 */
-	public String getPrice(int productId) throws Exception {
+	public int getPrice(int productId) throws Exception {
 
 		String getPriceQry = "SELECT PRICE FROM PRODUCTS WHERE PRODUCT_ID ="
 				+ productId;
@@ -49,7 +49,7 @@ public class ProductPrice {
 
 		// Iterate and get the product price.
 		if (rs.next()) {
-			String price = rs.getString("PRICE");
+			int price = Integer.parseInt(rs.getString("PRICE"));
 			System.out.println("PRICE: " + price);
 			System.out
 					.println("--------------Retreived Non-Samsung product price successfully--------------");

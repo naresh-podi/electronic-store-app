@@ -123,13 +123,16 @@ public class DBUtil implements Callable {
 		
 		// check for 'db-queries' is directory or not
 		if (dirObject.isDirectory()) {
+			
 			//digging into folder for sql files
 			if (child.length == 0) {
 				throw new Exception("No SQL files available to setup DB");
 			} else {
+			
 				//Reading each file
 				for (String file : child) {
 					File fileObject = new File(dirPath + sqlDirLoc +"/"+ file);
+				
 					//Restricts to read only .sql files 
 					if (fileObject.isFile()	&& fileObject.getName().endsWith(".sql")) {
 						sqlPaths.add(fileObject.getPath());
