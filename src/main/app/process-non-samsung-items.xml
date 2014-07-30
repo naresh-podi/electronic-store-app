@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<mule xmlns:vm="http://www.mulesoft.org/schema/mule/vm" xmlns:jbossts="http://www.mulesoft.org/schema/mule/jbossts" xmlns:tracking="http://www.mulesoft.org/schema/mule/ee/tracking" xmlns:jms="http://www.mulesoft.org/schema/mule/jms"
+<mule xmlns:json="http://www.mulesoft.org/schema/mule/json" xmlns:vm="http://www.mulesoft.org/schema/mule/vm" xmlns:jbossts="http://www.mulesoft.org/schema/mule/jbossts" xmlns:tracking="http://www.mulesoft.org/schema/mule/ee/tracking" xmlns:jms="http://www.mulesoft.org/schema/mule/jms"
 	xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core"
 	xmlns:db="http://www.mulesoft.org/schema/mule/db" xmlns:scripting="http://www.mulesoft.org/schema/mule/scripting"
 	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
@@ -15,7 +15,8 @@ http://www.springframework.org/schema/beans http://www.springframework.org/schem
 http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
 http://www.mulesoft.org/schema/mule/jbossts http://www.mulesoft.org/schema/mule/jbossts/current/mule-jbossts.xsd
 http://www.mulesoft.org/schema/mule/ee/tracking http://www.mulesoft.org/schema/mule/ee/tracking/current/mule-tracking-ee.xsd
-http://www.mulesoft.org/schema/mule/vm http://www.mulesoft.org/schema/mule/vm/current/mule-vm.xsd">
+http://www.mulesoft.org/schema/mule/vm http://www.mulesoft.org/schema/mule/vm/current/mule-vm.xsd
+http://www.mulesoft.org/schema/mule/json http://www.mulesoft.org/schema/mule/json/current/mule-json.xsd">
 
 	<flow doc:name="process-non-samsung-items" name="process-non-samsung-items">
 		<vm:inbound-endpoint doc:name="non-samsung-items-receiver" path="${vm.nonsamsung.items}" exchange-pattern="request-response">
@@ -30,16 +31,16 @@ http://www.mulesoft.org/schema/mule/vm http://www.mulesoft.org/schema/mule/vm/cu
 					disableTransportTransformer="true" doc:name="invoke-price-rest-service"
 					exchange-pattern="request-response" host="${http.host}" method="GET"
 					path="${api.prices.product.id}" port="${http.port}" />
-				<object-to-string-transformer doc:name="object-to-string" />
+                <json:json-to-object-transformer returnClass="java.lang.Integer" doc:name="JSON-to-integer-object"/>
+
 			</ee:cache>
 		</enricher>
         <set-variable variableName="totalPrice" value="#[price * payload.quantity]" doc:name="calculate-total-price"/>
-		<db:insert config-ref="Generic_Database_Configuration"
-			doc:name="save-order-item" transactionalAction="ALWAYS_JOIN">
+        <db:insert config-ref="Generic_Database_Configuration" transactionalAction="ALWAYS_JOIN" doc:name="save-order-item">
             <db:parameterized-query><![CDATA[insert into ORDER_DETAILS (ID, ORDER_ID, PRODUCT_ID, QUANTITY, STATUS) values (default, #[sessionVars.orderId], #[payload.productId], #[payload.quantity], 'ACCEPTED')]]></db:parameterized-query>
-		</db:insert>
-
+        </db:insert>
         <component class="com.mulesoft.estore.orders.MakePurchaseReceipt" doc:name="prepare-receipt"/>
+
         
         <catch-exception-strategy doc:name="catch-exception-strategy">
             <logger message="Error message : #[payload]" level="INFO" doc:name="log-payload"/>

@@ -33,6 +33,7 @@ http://www.mulesoft.org/schema/mule/ee/tracking http://www.mulesoft.org/schema/m
         <db:insert config-ref="Generic_Database_Configuration" doc:name="save-order-item">
             <db:parameterized-query><![CDATA[insert into ORDER_DETAILS (ID, ORDER_ID, PRODUCT_ID, QUANTITY, STATUS) values (default, #[sessionVars.orderId], #[samsungItem.productId], #[samsungItem.quantity], 'ACCEPTED')]]></db:parameterized-query>
 
+
         </db:insert>
         <set-payload value="#[orderResponse]" doc:name="set-order-response"/>
 		
@@ -45,12 +46,12 @@ http://www.mulesoft.org/schema/mule/ee/tracking http://www.mulesoft.org/schema/m
 		</catch-exception-strategy>
 	</flow>
 	
-	<sub-flow doc:name="get-samsung-product-price" name="get-samsung-product-price">
+	<flow doc:name="get-samsung-product-price" name="get-samsung-product-price">
 		<cxf:jaxws-client clientClass="com.mulesoft.estore.samsung.SamsungServiceService"
 			doc:name="get-samsung-product-price" operation="purchase" port="SamsungServicePort" />
 		<http:outbound-endpoint doc:name="get-samsung-product-price"
 			exchange-pattern="request-response" host="${http.host}" path="${service.orders.samsung}"
 			port="${http.port}" method="POST"/>
-	</sub-flow>
+	</flow>
 
 </mule>
